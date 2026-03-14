@@ -1,0 +1,4 @@
+export enum TokenConfig {
+  TOKEN_SECRET = 'TOKEN_SECRET',
+  REFRESH_TOKEN_SECRET = 'REFRESH_TOKEN_SECRET',
+}

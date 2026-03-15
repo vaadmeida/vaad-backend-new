@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Response } from 'express';
-import { TokenDataDto } from '../dto/token.dto';
+import { TokenDto } from '../dto/token.dto';
 
 @Injectable()
 export class TokenMiddlewareGuard implements CanActivate {
@@ -18,7 +18,7 @@ export class TokenMiddlewareGuard implements CanActivate {
 
     try {
       const response: Response = context.switchToHttp().getResponse();
-      const tokenData = response.locals.tokenData as TokenDataDto;
+      const tokenData = response.locals.tokenData as TokenDto;
 
       if (!tokenData) {
         throw new NotFoundException('authorization token not found');

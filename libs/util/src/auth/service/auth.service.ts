@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { hash, verifyHash } from '../../general/function/password.function';
 import { CacheService } from '../../cache/service/cache.services';
-import { TokenDataDto } from '../dto/token.dto';
+import { TokenDto } from '../dto/token.dto';
 import { RolesEnum } from '../enum/roles.enum';
 
 @Injectable()
@@ -64,7 +64,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credential');
     }
 
-    const cacheData: TokenDataDto = {
+    const cacheData: TokenDto = {
       identifier,
       data,
     };
@@ -112,7 +112,7 @@ export class AuthService {
       throw new NotFoundException('Account not found for token generation');
     }
 
-    const cacheData: TokenDataDto = {
+    const cacheData: TokenDto = {
       identifier,
       data,
     };

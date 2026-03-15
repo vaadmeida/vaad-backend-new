@@ -7,7 +7,7 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../service/token.service';
 import { CacheService } from '../../cache/service/cache.services';
-import { TokenDataDto } from '../dto/token.dto';
+import { TokenDto } from '../dto/token.dto';
 
 @Injectable()
 export class OptionalTokenMiddleware implements NestMiddleware {
@@ -28,7 +28,7 @@ export class OptionalTokenMiddleware implements NestMiddleware {
         }
         this.logger.debug({ identifier });
         const rawTokenData = await this.cacheService.get(identifier);
-        const tokenData = JSON.parse(rawTokenData) as TokenDataDto;
+        const tokenData = JSON.parse(rawTokenData) as TokenDto;
 
         res.locals.tokenData = tokenData;
       }

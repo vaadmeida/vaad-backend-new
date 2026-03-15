@@ -7,6 +7,7 @@ import { RedisPubSubModule } from './redis-pub-sub/redis-pub-sub.module';
 import { ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   providers: [UtilService],
@@ -14,6 +15,7 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
   imports: [
     AuthModule,
     DatabaseModule,
+    OtpModule,
     CachingModule,
     RedisPubSubModule,
     ThrottlerModule.forRootAsync({

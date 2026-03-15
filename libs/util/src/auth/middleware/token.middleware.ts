@@ -7,7 +7,7 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../service/token.service';
 import { CacheService } from '../../cache/service/cache.services';
-import { TokenDataDto } from '../dto/token.dto';
+import { TokenDto } from '../dto/token.dto';
 
 @Injectable()
 export class TokenMiddleware implements NestMiddleware {
@@ -29,7 +29,7 @@ export class TokenMiddleware implements NestMiddleware {
         throw new UnauthorizedException('Invalid token');
       }
 
-      const tokenData: TokenDataDto = await this.cacheService.getOrThrowError(
+      const tokenData: TokenDto = await this.cacheService.getOrThrowError(
         verifiedToken.identifier,
       );
 

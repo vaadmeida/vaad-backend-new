@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
-import { TokenDataDto } from '../dto/token.dto';
+import { TokenDto } from '../dto/token.dto';
 
-export const TokenDecorator = createParamDecorator(
+export const Token = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const response: Response = ctx.switchToHttp().getResponse();
-    return response.locals.tokenData as TokenDataDto;
+    return response.locals.tokenData as TokenDto;
   },
 );
 

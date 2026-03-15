@@ -6,6 +6,8 @@ import { BillboardModule } from './billboard/billboard.module';
 import { QuoteModule } from './quote/quote.module';
 import { UtilModule } from './../libs/util/src/util.module';
 import { EnvTypeEnum } from '../libs/util/src/env/env.enum';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -19,6 +21,8 @@ const envFilePath =
     AdminModule,
     BillboardModule,
     QuoteModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
 })

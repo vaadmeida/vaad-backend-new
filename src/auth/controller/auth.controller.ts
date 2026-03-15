@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -17,6 +18,7 @@ import type { TokenDto } from '../../../libs/util/src/auth/dto/token.dto';
 import mongoose from 'mongoose';
 import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
@@ -56,7 +58,7 @@ export class AuthController {
     });
   }
 
-  @Post('user/forget-passwprd')
+  @Post('user/forget-password')
   async forgetPassword(@Body() { email }: ForgetPasswordDto) {
     try {
       const user = await this.userService.findOneUser(email);
@@ -85,7 +87,7 @@ export class AuthController {
     }
   }
 
-  @Post('user/reset-passwprd')
+  @Post('user/reset-password')
   async resetPassword(
     @Body() { password }: ResetPasswordDto,
     @Token() { identifier }: TokenDto,

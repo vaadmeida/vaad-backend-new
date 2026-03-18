@@ -1,5 +1,10 @@
 import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AdminModule } from './admin/admin.module';
 import { BillboardModule } from './billboard/billboard.module';
@@ -8,6 +13,9 @@ import { UtilModule } from './../libs/util/src/util.module';
 import { EnvTypeEnum } from '../libs/util/src/env/env.enum';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { RequestModule } from './request/request.module';
+import { RequestLoggerMiddleware } from '@app/util/middleware/requestLogger.middleware';
+import { TokenMiddleware } from '@app/util/auth/middleware/token.middleware';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -23,7 +31,34 @@ const envFilePath =
     QuoteModule,
     UsersModule,
     AuthModule,
+    RequestModule,
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // RequestLoggerMiddleware;
+    consumer
+      .apply(RequestLoggerMiddleware)
+      .exclude({ path: '', method: RequestMethod.GET })
+      .forRoutes({
+        path: '*',
+        method: RequestMethod.ALL,
+      });
+
+    // TokenMiddleware;
+    consumer
+      .apply(TokenMiddleware)
+      .exclude(
+        { path: '', method: RequestMethod.GET },
+        { path: '/auth/users/sign-up', method: RequestMethod.POST },
+        { path: '/auth/users/generate-tokens', method: RequestMethod.POST },
+        { path: '/auth/users/login', method: RequestMethod.POST },
+        { path: '/auth/users/forget-password', method: RequestMethod.POST },
+      )
+      .forRoutes({
+        path: '*',
+        method: RequestMethod.ALL,
+      });
+  }
+}

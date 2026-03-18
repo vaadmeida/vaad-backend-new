@@ -26,7 +26,7 @@ import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 const role = RolesEnum.USER;
 
 @ApiTags('Auth')
-@Controller('auth/user')
+@Controller('auth/users')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 

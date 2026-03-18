@@ -35,4 +35,4 @@ jobs:
                   tags: gbengstar/vaad-backend:latest
 
             - name: Call render and Update
-              run: curl https://api.render.com/deploy/srv-cup1vhl2ng1s73eeaa40?key=QJkaN9kt4Vk
+              run: curl https://api.render.com/deploy/srv-d6tdqg75gffc7393pnk0?key=cbJqkdqQBLg

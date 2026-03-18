@@ -5,3 +5,8 @@ export class OtpDto {
 }
 
 export type VerifyOtpByEmailDto = Pick<Otp, 'email' | 'code'>;
+
+export enum OtpTypeEnum {
+  SIGN_UP = 'SU',
+  FORGET_PASSWORD = 'FP',
+}

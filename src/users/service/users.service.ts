@@ -1,22 +1,36 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schema/users.schema';
-import { ClientSession, Model } from 'mongoose';
+import { ClientSession, Model, QueryFilter } from 'mongoose';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) readonly UserModel: Model<User>) {}
 
-  async createUser(user: Omit<User, 'deletedAt'>, session?: ClientSession) {
-    const newUser = await this.UserModel.create([user], { session });
+  async createUser(user: Partial<User>, session?: ClientSession) {
+    const newUser = await this.UserModel.findOneAndUpdate(
+      { email: user?.email?.toLowerCase() },
+      { $set: user },
+      { upsert: true, returnDocument: 'after', session },
+    );
 
-    return newUser[0];
+    return newUser;
   }
 
-  async findOneUser(identifier: string) {
-    const user = await this.UserModel.findOne({
-      $or: [{ _id: identifier }, { email: identifier }],
-    }).orFail(new NotFoundException('User not found'));
+  async findOne(query: Partial<User & { id: string }>) {
+    const filter: QueryFilter<User> = {};
+
+    if (query.email) {
+      filter.email = query.email.trim().toLowerCase();
+    }
+
+    if (query.id) {
+      filter._id = query.id;
+    }
+
+    const user = await this.UserModel.findOne(filter).orFail(
+      new NotFoundException('User not found'),
+    );
 
     return user;
   }

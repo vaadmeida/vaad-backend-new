@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { UserStatusEnum } from '../dto/user.dto';
 
 @Schema({ timestamps: true })
 export class User {
@@ -16,6 +17,13 @@ export class User {
 
   @Prop({ required: true })
   phoneNumber: string;
+
+  @Prop({
+    type: String,
+    enum: UserStatusEnum,
+    default: UserStatusEnum.AWAITING_EMAIL_VERIFICATION,
+  })
+  status: UserStatusEnum;
 
   @Prop({ default: null })
   deletedAt: Date;

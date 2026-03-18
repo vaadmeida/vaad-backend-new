@@ -67,3 +67,8 @@ export class GenerateTokenDto extends PickType(UserSingUpDto, [
   @IsString()
   token: string;
 }
+
+export class LoginDto extends PickType(UserSingUpDto, [
+  'email',
+  'password',
+] as const) {}

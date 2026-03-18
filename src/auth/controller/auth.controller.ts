@@ -1,5 +1,6 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
+  BadRequestException,
   Body,
   Controller,
   Logger,
@@ -9,6 +10,7 @@ import {
 import {
   ForgetPasswordDto,
   GenerateTokenDto,
+  LoginDto,
   ResetPasswordDto,
   UserSingUpDto,
 } from '../dto/user-auth.dto';
@@ -17,33 +19,73 @@ import { AuthService, randomDigits, Token } from '../../../libs/util/src';
 import type { TokenDto } from '../../../libs/util/src/auth/dto/token.dto';
 import mongoose from 'mongoose';
 import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
+import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
+import { UserStatusEnum } from 'src/users/dto/user.dto';
+import { RolesEnum } from '@app/util/auth/enum/roles.enum';
+
+const role = RolesEnum.USER;
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('auth/user')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
     private readonly otpService: OtpService,
   ) {}
 
-  @Post('user/sign-up')
+  @Post('sign-up')
   async userSignUp(@Body() { password, ...signUpData }: UserSingUpDto) {
-    const session = await mongoose.startSession();
+    const session = await this.userService.UserModel.startSession();
     return session.withTransaction(async () => {
       const user = await this.userService.createUser(signUpData, session);
 
-      const tokens = await this.authService.signUp(
-        user._id.toString(),
-        password,
-      );
+      await this.authService.signUp(user._id.toString(), password);
 
-      return { profile: user, ...tokens };
+      const token = randomDigits(10);
+
+      this.logger.debug(JSON.stringify({ token }));
+
+      await this.otpService.hashAndSaveOtp({
+        email: user.email,
+        code: token,
+        type: OtpTypeEnum.SIGN_UP,
+      });
+
+      //TODO send sign up email to user
+      // const emailData = { token, email: signUpData.email };
+
+      return { profile: user, token };
     });
   }
 
-  @Post('user/verify-email')
+  @Post('login')
+  async login(@Body() { password, email }: LoginDto) {
+    try {
+      const user = await this.userService.findOne({ email });
+      const token = await this.authService.login(
+        user._id.toString(),
+        password,
+        {
+          email,
+          role,
+        },
+      );
+
+      if (user.status !== UserStatusEnum.ACTIVE) {
+        throw new BadRequestException('User is not active');
+      }
+
+      return { profile: user, token };
+    } catch (error) {
+      this.logger.warn(error);
+      throw new UnauthorizedException('Email or password is not valid');
+    }
+  }
+
+  @Post('/verify-email')
   async verifySignUpEmail(@Body() { password, ...signUpData }: UserSingUpDto) {
     const session = await mongoose.startSession();
     return session.withTransaction(async () => {
@@ -58,17 +100,26 @@ export class AuthController {
     });
   }
 
-  @Post('user/forget-password')
+  @Post('/forget-password')
   async forgetPassword(@Body() { email }: ForgetPasswordDto) {
     try {
-      const user = await this.userService.findOneUser(email);
+      const user = await this.userService.findOne({ email });
       const token = randomDigits(10);
 
       this.logger.debug(JSON.stringify({ token }));
 
-      await this.otpService.hashAndSaveOtp({ email: user.email, code: token });
+      await this.otpService.hashAndSaveOtp({
+        email: user.email,
+        code: token,
+        type: OtpTypeEnum.SIGN_UP,
+      });
 
       //TODO send email to user
+
+      // const emailData = { token, email };
+      // const frontend = '';
+
+      return { success: true, token, email };
     } catch (error) {
       this.logger.error(error.message);
       return;
@@ -78,26 +129,35 @@ export class AuthController {
   @Post('/generate-tokens')
   async generateTokens(@Body() { token, email }: GenerateTokenDto) {
     try {
-      await this.otpService.verifyHashedOtp({ email, code: token });
-
-      return this.authService.generateTokens(email, {});
+      await this.otpService.verifyHashedOtp({
+        email,
+        code: token,
+        type: OtpTypeEnum.SIGN_UP,
+      });
+      const user = await this.userService.findOne({ email });
+      user.status = UserStatusEnum.ACTIVE;
+      await user.save();
+      return this.authService.generateTokens(user._id.toString(), {
+        email,
+        role,
+      });
     } catch (error) {
       this.logger.error(error.message);
       throw new UnauthorizedException('Invalid token');
     }
   }
 
-  @Post('user/reset-password')
+  @Post('/reset-password')
   async resetPassword(
     @Body() { password }: ResetPasswordDto,
     @Token() { identifier }: TokenDto,
   ) {
     try {
-      const user = await this.userService.findOneUser(identifier);
+      const user = await this.userService.findOne({ id: identifier });
 
       await this.authService.changePassword(user._id.toString(), password);
 
-      //TODO send email to user
+      return { success: true };
     } catch (error) {
       this.logger.error(error.message);
       return;

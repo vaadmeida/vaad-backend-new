@@ -22,35 +22,35 @@ export class OtpService {
   ) {}
 
   async hashAndSaveOtp(
-    { email, code }: Pick<Otp, 'email' | 'code'>,
+    { email, code, type }: Pick<Otp, 'email' | 'code' | 'type'>,
+    expireInMin?: number,
     session?: ClientSession,
   ) {
     const [hashCode] = await Promise.all([
       hash(code),
       this.otpModel.deleteMany({ email }, { session }),
     ]);
-    const date = new Date();
-    //   expire in ten minutes
-    const expirationDate = new Date(date.getTime() + 10 * 60000);
 
-    return this.otpModel.create(
-      [
-        {
-          email,
-          code: hashCode,
-          expirationDate,
-        },
-      ],
-      { session },
-    );
+    const payload: Partial<Otp> = {
+      email,
+      type,
+      code: hashCode,
+    };
+
+    if (expireInMin) {
+      const date = new Date();
+      payload.expirationDate = new Date(date.getTime() + expireInMin * 60000);
+    }
+
+    return this.otpModel.create([payload], { session });
   }
 
   async verifyHashedOtp(
-    { email, code }: Pick<Otp, 'email' | 'code'>,
+    { email, code, type }: Pick<Otp, 'email' | 'code' | 'type'>,
     canExpire = true,
   ) {
     const foundCode = await this.otpModel
-      .findOne({ email })
+      .findOne({ email, type })
       .sort({ createdAt: -1 });
 
     if (!foundCode) {

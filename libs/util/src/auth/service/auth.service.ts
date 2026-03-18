@@ -1,6 +1,5 @@
 import { TokenService } from './token.service';
 import {
-  BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
@@ -11,8 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { hash, verifyHash } from '../../general/function/password.function';
 import { CacheService } from '../../cache/service/cache.services';
-import { TokenDto } from '../dto/token.dto';
-import { RolesEnum } from '../enum/roles.enum';
+import { TokenData, TokenDto } from '../dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,20 +21,14 @@ export class AuthService {
     private readonly cacheService: CacheService,
   ) {}
 
-  async signUp(identifier: string, password: string, roles: RolesEnum[] = []) {
-    const [hashPass, exitingIdentifier] = await Promise.all([
-      hash(password),
-      this.AuthModel.exists({ identifier }),
-    ]);
+  async signUp(identifier: string, password: string) {
+    const hashPass = await hash(password);
 
-    if (exitingIdentifier) {
-      throw new BadRequestException('Identifier already exist');
-    }
-    const { _id } = await this.AuthModel.create({
-      password: hashPass,
-      identifier,
-      roles,
-    });
+    const { _id } = await this.AuthModel.findOneAndUpdate(
+      { identifier },
+      { $set: { password: hashPass, identifier } },
+      { returnDocument: 'after', upsert: true },
+    );
     try {
       const [accessToken, refreshToken] = await Promise.all([
         this.tokenService.signToken(identifier),
@@ -51,7 +43,7 @@ export class AuthService {
     }
   }
 
-  async login(identifier: string, password: string, data: any = {}) {
+  async login(identifier: string, password: string, data: TokenData) {
     const account = await this.AuthModel.findOne({ identifier });
 
     if (!account) {
@@ -106,7 +98,7 @@ export class AuthService {
     await account.save();
   }
 
-  async generateTokens(identifier: string, data: Record<string, string> = {}) {
+  async generateTokens(identifier: string, data: TokenData) {
     const account = await this.AuthModel.findOne({ identifier });
     if (!account) {
       throw new NotFoundException('Account not found for token generation');

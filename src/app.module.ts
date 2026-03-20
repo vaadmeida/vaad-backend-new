@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { RequestModule } from './request/request.module';
 import { RequestLoggerMiddleware } from '@app/util/middleware/requestLogger.middleware';
 import { TokenMiddleware } from '@app/util/auth/middleware/token.middleware';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -32,6 +33,7 @@ const envFilePath =
     UsersModule,
     AuthModule,
     RequestModule,
+    NewsletterModule,
   ],
   controllers: [AppController],
 })
@@ -55,6 +57,9 @@ export class AppModule implements NestModule {
         { path: '/auth/users/generate-tokens', method: RequestMethod.POST },
         { path: '/auth/users/login', method: RequestMethod.POST },
         { path: '/auth/users/forget-password', method: RequestMethod.POST },
+        { path: '/requests/media-plans', method: RequestMethod.POST },
+        { path: '/billboards/assets', method: RequestMethod.GET },
+        { path: '/billboards/search', method: RequestMethod.GET },
       )
       .forRoutes({
         path: '*',

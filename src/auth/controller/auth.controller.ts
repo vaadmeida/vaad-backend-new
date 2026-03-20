@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import {
   BadRequestException,
@@ -15,7 +16,12 @@ import {
   UserSingUpDto,
 } from '../dto/user-auth.dto';
 import { UsersService } from '../../users/service/users.service';
-import { AuthService, randomDigits, Token } from '../../../libs/util/src';
+import {
+  AuthService,
+  base64Encode,
+  randomDigits,
+  Token,
+} from '../../../libs/util/src';
 import type { TokenDto } from '../../../libs/util/src/auth/dto/token.dto';
 import mongoose from 'mongoose';
 import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
@@ -34,6 +40,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UsersService,
     private readonly otpService: OtpService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('sign-up')
@@ -55,9 +62,12 @@ export class AuthController {
       });
 
       //TODO send sign up email to user
-      // const emailData = { token, email: signUpData.email };
+      const encodedEmailData = base64Encode(
+        JSON.stringify({ token, email: signUpData.email }),
+      );
+      const link = `${this.configService.get('FRONTEND_BASEURL')}/verify-email?data=${encodedEmailData}`;
 
-      return { profile: user, token };
+      return { profile: user, token, link };
     });
   }
 

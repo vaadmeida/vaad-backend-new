@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
-export class MediaPlan {
+export class MediaPlanRequest {
   @Prop()
   name: string;
 
@@ -32,4 +32,5 @@ export class MediaPlan {
   interest: string;
 }
 
-export const MediaPlanSchema = SchemaFactory.createForClass(MediaPlan);
+export const MediaPlanRequestSchema =
+  SchemaFactory.createForClass(MediaPlanRequest);

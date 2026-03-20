@@ -1,7 +1,13 @@
-import { Controller } from '@nestjs/common';
-import { RequestService } from '../service/request.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { MediaPlanRequestService } from '../service/request.service';
+import { MediaPlanRequest } from '../schema/media-plan-request.schema';
 
-@Controller('request')
+@Controller('requests')
 export class RequestController {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(private readonly requestService: MediaPlanRequestService) {}
+
+  @Post('media-plans')
+  async createMediaPlanRequest(@Body() media: Partial<MediaPlanRequest>) {
+    return this.requestService.createMedia(media);
+  }
 }

@@ -1,0 +1,16 @@
+services:
+  vaad-backend:
+    image: macjenueproject/backend:latest
+    container_name: vaad-backend
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - 7050:7050
+  redis:
+    image: redis
+    container_name: redis
+
+networks:
+  app-network:
+    driver: local

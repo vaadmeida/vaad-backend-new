@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
-import { RequestService } from './service/request.service';
+import { MediaPlanRequestService } from './service/request.service';
 import { RequestController } from './controller/request.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MediaPlan, MediaPlanSchema } from './schema/media-plan.schema';
+import {
+  MediaPlanRequest,
+  MediaPlanRequestSchema,
+} from './schema/media-plan-request.schema';
 
 @Module({
   controllers: [RequestController],
-  providers: [RequestService],
+  providers: [MediaPlanRequestService],
   imports: [
     MongooseModule.forFeature([
-      { name: MediaPlan.name, schema: MediaPlanSchema },
+      { name: MediaPlanRequest.name, schema: MediaPlanRequestSchema },
     ]),
   ],
 })

@@ -68,7 +68,18 @@ export class GenerateTokenDto extends PickType(UserSingUpDto, [
   token: string;
 }
 
-export class LoginDto extends PickType(UserSingUpDto, [
-  'email',
-  'password',
-] as const) {}
+export class LoginDto {
+  @ApiProperty({
+    example: 'john.doe@example.com',
+    description: 'The email address of the user',
+  })
+  @IsString()
+  email: string;
+
+  @ApiProperty({
+    example: 'Password123!',
+    description: 'A strong password for the user',
+  })
+  @IsString()
+  password: string;
+}

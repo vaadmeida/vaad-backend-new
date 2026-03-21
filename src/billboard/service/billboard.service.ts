@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
   CreateBillboardDTO,
   SearchBillboardFilter,
@@ -18,6 +18,7 @@ import {
 import { NigeriaStateCityMap } from '../dto/state-city.dto';
 import { paginateResult } from '@app/util';
 import { PaginationDto } from '@app/util/pagination/dto/paginate.dto';
+import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 
 @Injectable()
 export class BillboardService {
@@ -41,6 +42,18 @@ export class BillboardService {
 
   async createBillboard(payload: CreateBillboardDTO) {
     return this.BillBoardModel.create(payload);
+  }
+
+  async updateBillboard(id: string, payload: UpdateBillboardDTO) {
+    return this.BillBoardModel.findByIdAndUpdate(id, payload, {
+      returnDocument: 'after',
+    });
+  }
+
+  async getOneBillboard(id: string) {
+    return this.BillBoardModel.findById(id).orFail(
+      new NotFoundException('Billboard not found'),
+    );
   }
 
   async searchBillboards(
@@ -77,20 +90,24 @@ export class BillboardService {
       filter['landmark'] = query.landmark;
     }
 
-    if ('mediaType' in query && query.mediaType !== undefined) {
-      filter['mediaType'] = query.mediaType;
+    if ('mediaTypes' in query && query.mediaTypes !== undefined) {
+      filter['mediaType'] = { $in: query.mediaTypes };
     }
 
-    if ('orientation' in query && query.orientation !== undefined) {
-      filter['orientation'] = query.orientation;
+    if ('orientations' in query && query.orientations !== undefined) {
+      filter['orientation'] = { $in: query.orientations };
     }
 
-    if ('printProductType' in query && query.printProductType !== undefined) {
-      filter['printProductType'] = query.printProductType;
+    if ('printProductTypes' in query && query.printProductTypes !== undefined) {
+      filter['printProductType'] = { $in: query.printProductTypes };
     }
 
-    if ('targetAudience' in query && query.targetAudience !== undefined) {
-      filter['targetAudience'] = query.targetAudience;
+    if ('targetAudiences' in query && query.targetAudiences !== undefined) {
+      filter['targetAudience'] = { $in: query.targetAudiences };
+    }
+
+    if ('serviceTypes' in query && query.serviceTypes !== undefined) {
+      filter['serviceType'] = { $in: query.serviceTypes };
     }
 
     if ('height' in query && query.height !== undefined) {
@@ -103,10 +120,6 @@ export class BillboardService {
 
     if ('units' in query && query.units !== undefined) {
       filter['units'] = query.units;
-    }
-
-    if ('serviceType' in query && query.serviceType !== undefined) {
-      filter['serviceType'] = query.serviceType;
     }
 
     return paginateResult(pg, filter, this.BillBoardModel, []);

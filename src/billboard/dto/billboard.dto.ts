@@ -31,6 +31,11 @@ export class CreateBillboardDTO {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  description: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   state: string;
 
   @ApiProperty()
@@ -94,7 +99,7 @@ export class CreateBillboardDTO {
   @ApiProperty({ type: [String] })
   @IsArray()
   @IsString({ each: true })
-  @IsOptional()
+  @IsNotEmpty()
   photos: string[];
 
   @ApiProperty()
@@ -160,28 +165,33 @@ export class SearchBillboardFilter {
 
   @ApiProperty({ enum: BillboardPrintProductType })
   @IsEnum(BillboardPrintProductType)
+  @IsArray()
   @IsOptional()
-  printProductType: BillboardPrintProductType;
+  printProductTypes: BillboardPrintProductType[];
 
   @ApiProperty({ enum: BillboardServiceCategory })
   @IsEnum(BillboardServiceCategory)
+  @IsArray()
   @IsOptional()
-  serviceType: BillboardServiceCategory;
+  serviceTypes: BillboardServiceCategory[];
 
   @ApiProperty({ enum: BillboardMediaTypeEnum })
   @IsEnum(BillboardMediaTypeEnum)
+  @IsArray()
   @IsOptional()
-  mediaType: BillboardMediaTypeEnum;
+  mediaTypes: BillboardMediaTypeEnum[];
 
   @ApiProperty({ enum: BillBoardOrientationEnum })
   @IsEnum(BillBoardOrientationEnum)
+  @IsArray()
   @IsOptional()
-  orientation: BillBoardOrientationEnum;
+  orientations: BillBoardOrientationEnum[];
 
   @ApiProperty({ enum: BillboardTargetAudience })
   @IsEnum(BillboardTargetAudience)
+  @IsArray()
   @IsOptional()
-  targetAudience: BillboardTargetAudience;
+  targetAudiences: BillboardTargetAudience[];
 }
 
 export class PaginationFilter {

@@ -23,6 +23,9 @@ export class Billboard {
   @Prop({ trim: true })
   partnerId: string;
 
+  @Prop({ required: true })
+  description: string;
+
   @Prop({ transform })
   locationAddress: string;
 

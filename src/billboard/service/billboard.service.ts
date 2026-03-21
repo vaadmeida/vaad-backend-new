@@ -1,4 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { paginateResult } from '@app/util';
+import { PaginationDto } from '@app/util/pagination/dto/paginate.dto';
 import {
   CreateBillboardDTO,
   SearchBillboardFilter,
@@ -16,8 +18,7 @@ import {
   BillboardServiceCategory,
 } from '../enum/billboard.enum';
 import { NigeriaStateCityMap } from '../dto/state-city.dto';
-import { paginateResult } from '@app/util';
-import { PaginationDto } from '@app/util/pagination/dto/paginate.dto';
+import { FavoriteBillboardService } from './favorite-billboard.service';
 import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 
 @Injectable()
@@ -26,6 +27,7 @@ export class BillboardService {
   constructor(
     @InjectModel(Billboard.name)
     private readonly BillBoardModel: Model<Billboard>,
+    private readonly favoriteBillboardService: FavoriteBillboardService,
   ) {}
   assets() {
     return {
@@ -56,9 +58,28 @@ export class BillboardService {
     );
   }
 
+  async addFavoritesToBillboards(
+    data: Billboard[],
+    userId?: string,
+  ): Promise<any> {
+    let favorites: string[] = [];
+
+    if (userId) {
+      const userFav =
+        await this.favoriteBillboardService.getOrCreateFavorites(userId);
+      favorites = userFav.favorites;
+    }
+
+    return data.map((item: any) => {
+      item.favorite = favorites.includes(item._id.toString());
+      return item;
+    });
+  }
+
   async searchBillboards(
     query: SearchBillboardFilter,
     pg: PaginationDto = { page: 1, limit: 10 },
+    userId?: string,
   ) {
     const filter = {};
 
@@ -122,6 +143,18 @@ export class BillboardService {
       filter['units'] = query.units;
     }
 
-    return paginateResult(pg, filter, this.BillBoardModel, []);
+    const response = await paginateResult<Billboard>(
+      pg,
+      filter,
+      this.BillBoardModel as any,
+      [],
+    );
+
+    response.foundItems = await this.addFavoritesToBillboards(
+      response.foundItems,
+      userId,
+    );
+
+    return response;
   }
 }

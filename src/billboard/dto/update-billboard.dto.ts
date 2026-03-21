@@ -3,6 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -105,4 +106,11 @@ export class UpdateBillboardDTO {
   @IsBoolean()
   @IsOptional()
   hotDeal: boolean;
+}
+
+export class LikeBillboardDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  billboardId: string;
 }

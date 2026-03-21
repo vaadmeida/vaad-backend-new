@@ -102,6 +102,12 @@ export class CreateBillboardDTO {
   @IsNotEmpty()
   photos: string[];
 
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  features: string[];
+
   @ApiProperty()
   @IsBoolean()
   @IsOptional()
@@ -198,11 +204,11 @@ export class PaginationFilter {
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  limit: number;
+  limit: number = 10;
 
   @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsOptional()
-  page: number;
+  page: number = 1;
 }

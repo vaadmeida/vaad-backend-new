@@ -1,13 +1,19 @@
-import { QueryFilter, Model, SortOrder, PopulateOptions } from 'mongoose';
-import { PaginationDto } from '../dto/paginate.dto';
+import {
+  QueryFilter,
+  Model,
+  SortOrder,
+  PopulateOptions,
+  Document,
+} from 'mongoose';
+import { PaginationDto, PaginationResponseDto } from '../dto/paginate.dto';
 
 export const paginateResult = async <M>(
   paginationData: PaginationDto,
   query: QueryFilter<M>,
-  model: Model<M>,
+  model: Model<M & Document>,
   population: PopulateOptions[],
   sort?: string | { [key: string]: SortOrder },
-) => {
+): Promise<PaginationResponseDto<M & Document>> => {
   const { limit, page } = paginationData;
   const count = await model.countDocuments(query);
   // const count = 10;

@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { TokenService } from '../service/token.service';
@@ -19,6 +20,7 @@ export class OptionalTokenMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const token = this.tokenService.getToken(req);
+      this.logger.debug('Token found: ', !!token);
 
       if (token) {
         const { identifier } = await this.tokenService.verifyToken(token);
@@ -26,9 +28,16 @@ export class OptionalTokenMiddleware implements NestMiddleware {
         if (!identifier) {
           throw new BadRequestException('please provide a valid JWT token');
         }
-        this.logger.debug({ identifier });
-        const rawTokenData = await this.cacheService.get(identifier);
-        const tokenData = JSON.parse(rawTokenData) as TokenDto;
+
+        const verifiedToken = await this.tokenService.verifyToken(token);
+
+        if (!verifiedToken.identifier) {
+          throw new UnauthorizedException('Invalid token');
+        }
+
+        const tokenData: TokenDto = await this.cacheService.getOrThrowError(
+          verifiedToken.identifier,
+        );
 
         res.locals.tokenData = tokenData;
       }

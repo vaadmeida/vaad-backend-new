@@ -74,6 +74,12 @@ export class Billboard {
   @Prop({ default: 5 })
   rating: number;
 
+  @Prop()
+  favorite: boolean;
+
+  @Prop({ type: [String], default: [] })
+  features: string[];
+
   @Prop({ default: () => new Date() })
   availableDate: Date;
 }

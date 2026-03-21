@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
-export class ContactUs {
+export class ConsultationRequest {
   @Prop({
     required: true,
     index: true,
@@ -10,17 +10,9 @@ export class ContactUs {
   })
   email: string;
 
-  @Prop()
-  phoneNumber: string;
-
-  @Prop({ required: true })
-  name: string;
-
-  @Prop({ required: true })
-  message: string;
-
   @Prop({ default: false })
   replied: boolean;
 }
 
-export const ContactUsSchema = SchemaFactory.createForClass(ContactUs);
+export const ConsultationRequestSchema =
+  SchemaFactory.createForClass(ConsultationRequest);

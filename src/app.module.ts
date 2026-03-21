@@ -17,7 +17,6 @@ import { RequestLoggerMiddleware } from '@app/util/middleware/requestLogger.midd
 import { TokenMiddleware } from '@app/util/auth/middleware/token.middleware';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { OptionalTokenMiddleware } from '@app/util/auth/middleware/optional-token.middleware';
-import { UtilityModule } from './utility/utility.module';
 import { ContactUsModule } from './contact-us/contact-us.module';
 
 const envFilePath =
@@ -36,7 +35,6 @@ const envFilePath =
     RequestModule,
     NewsletterModule,
     ContactUsModule,
-    UtilityModule,
   ],
   controllers: [AppController],
 })
@@ -67,6 +65,7 @@ export class AppModule implements NestModule {
         { path: '/newsletters/leave', method: RequestMethod.POST },
         { path: '/contact-us', method: RequestMethod.POST },
         { path: '/requests/media-plans', method: RequestMethod.POST },
+        { path: '/requests/consultations', method: RequestMethod.POST },
       )
       .forRoutes({
         path: '*',

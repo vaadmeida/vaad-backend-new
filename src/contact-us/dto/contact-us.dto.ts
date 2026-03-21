@@ -16,4 +16,9 @@ export class CreateContactUsDTO {
   @IsString()
   @IsOptional()
   message: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  phoneNumber: string;
 }

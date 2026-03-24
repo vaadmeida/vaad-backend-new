@@ -12,10 +12,10 @@ import {
   ForgetPasswordDto,
   GenerateTokenDto,
   LoginDto,
+  MediaPartnerSingUpDto,
   ResetPasswordDto,
   UserSingUpDto,
 } from '../dto/user-auth.dto';
-import { UsersService } from '../../users/service/users.service';
 import {
   AuthService,
   base64Encode,
@@ -28,24 +28,25 @@ import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
 import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
 import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
+import { MediaPartnerService } from 'src/media-partner/service/media-partner.service';
 
 const role = RolesEnum.USER;
 
-@ApiTags('Auth')
-@Controller('auth/users')
-export class AuthController {
-  private readonly logger = new Logger(AuthController.name);
+@ApiTags('Media Partner Auth')
+@Controller('auth/media-partners')
+export class MediaAuthController {
+  private readonly logger = new Logger(MediaAuthController.name);
 
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UsersService,
+    private readonly userService: MediaPartnerService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
   ) {}
 
   @Post('sign-up')
-  async userSignUp(@Body() { password, ...signUpData }: UserSingUpDto) {
-    const session = await this.userService.UserModel.startSession();
+  async userSignUp(@Body() { password, ...signUpData }: MediaPartnerSingUpDto) {
+    const session = await this.userService.MediaPartnerModel.startSession();
     return session.withTransaction(async () => {
       const user = await this.userService.createUser(signUpData, session);
 
@@ -65,7 +66,7 @@ export class AuthController {
       const encodedEmailData = base64Encode(
         JSON.stringify({ token, email: signUpData.email }),
       );
-      const link = `${this.configService.get('FRONTEND_BASEURL')}/verify-email?data=${encodedEmailData}`;
+      const link = `${this.configService.get('FRONTEND_MEDIA_PARTNER_BASEURL')}/verify-email?data=${encodedEmailData}`;
 
       return { profile: user, token, link };
     });

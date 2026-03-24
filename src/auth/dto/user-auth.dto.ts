@@ -83,3 +83,60 @@ export class LoginDto {
   @IsString()
   password: string;
 }
+
+export class MediaPartnerSingUpDto {
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'The full name of the user',
+  })
+  @IsString()
+  fullName: string;
+
+  @ApiProperty({
+    example: 'john.doe@example.com',
+    description: 'The email address of the user',
+  })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({
+    example: 'Password123!',
+    description: 'A strong password for the user',
+  })
+  @IsStrongPassword()
+  password: string;
+
+  @ApiProperty({ example: 'Lagos' })
+  @IsString()
+  @IsNotEmpty()
+  state: string;
+
+  @ApiProperty({ example: 'Epe' })
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @ApiProperty({ example: 'Nigeria' })
+  @IsString()
+  @IsNotEmpty()
+  country: string;
+
+  @ApiProperty({ example: 'John Doe Enterprises' })
+  @IsString()
+  @IsNotEmpty()
+  businessName: string;
+
+  @ApiProperty({ example: 'https://example.com/logo.png' })
+  @IsString()
+  @IsNotEmpty()
+  logo: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Whether the user accepts terms and conditions',
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  termsAndCondition: boolean;
+}

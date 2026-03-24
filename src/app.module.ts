@@ -18,6 +18,8 @@ import { TokenMiddleware } from '@app/util/auth/middleware/token.middleware';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { OptionalTokenMiddleware } from '@app/util/auth/middleware/optional-token.middleware';
 import { ContactUsModule } from './contact-us/contact-us.module';
+import { MediaPartnerModule } from './media-partner/media-partner.module';
+import { BlogModule } from './blog/blog.module';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -35,6 +37,8 @@ const envFilePath =
     RequestModule,
     NewsletterModule,
     ContactUsModule,
+    MediaPartnerModule,
+    BlogModule,
   ],
   controllers: [AppController],
 })
@@ -58,6 +62,18 @@ export class AppModule implements NestModule {
         { path: '/auth/users/generate-tokens', method: RequestMethod.POST },
         { path: '/auth/users/login', method: RequestMethod.POST },
         { path: '/auth/users/forget-password', method: RequestMethod.POST },
+        //
+        { path: '/auth/media-partners/sign-up', method: RequestMethod.POST },
+        {
+          path: '/auth/media-partners/generate-tokens',
+          method: RequestMethod.POST,
+        },
+        { path: '/auth/media-partners/login', method: RequestMethod.POST },
+        {
+          path: '/auth/media-partners/forget-password',
+          method: RequestMethod.POST,
+        },
+        //
         { path: '/requests/media-plans', method: RequestMethod.POST },
         { path: '/billboards/assets', method: RequestMethod.GET },
         { path: '/billboards/search', method: RequestMethod.GET },

@@ -8,15 +8,7 @@ import {
   BillboardPrintProductType,
   BillboardMediaTypeEnum,
 } from '../enum/billboard.enum';
-
-// transform each word initial to uppercase
-
-const transform = (sentence: string) => {
-  return sentence
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-};
+import { transform } from '@app/util/general/function/pascal-case.function';
 
 @Schema({ timestamps: true })
 export class Billboard {

@@ -20,6 +20,7 @@ import { OptionalTokenMiddleware } from '@app/util/auth/middleware/optional-toke
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { MediaPartnerModule } from './media-partner/media-partner.module';
 import { BlogModule } from './blog/blog.module';
+import { FileModule } from './file/file.module';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -39,6 +40,7 @@ const envFilePath =
     ContactUsModule,
     MediaPartnerModule,
     BlogModule,
+    FileModule,
   ],
   controllers: [AppController],
 })
@@ -82,6 +84,11 @@ export class AppModule implements NestModule {
         { path: '/contact-us', method: RequestMethod.POST },
         { path: '/requests/media-plans', method: RequestMethod.POST },
         { path: '/requests/consultations', method: RequestMethod.POST },
+        { path: '/blogs', method: RequestMethod.GET },
+        { path: '/blogs/assets', method: RequestMethod.GET },
+        { path: '/blogs/:id', method: RequestMethod.GET },
+        { path: '/blogs/:id/comments', method: RequestMethod.GET },
+        { path: '/blogs/comments', method: RequestMethod.POST },
       )
       .forRoutes({
         path: '*',

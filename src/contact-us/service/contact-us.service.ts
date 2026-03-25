@@ -5,8 +5,10 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ContactUsService {
-  @InjectModel(ContactUs.name)
-  private readonly ContactUsModel: Model<ContactUs>;
+  constructor(
+    @InjectModel(ContactUs.name)
+    private readonly ContactUsModel: Model<ContactUs>,
+  ) {}
 
   async createContactUs(contactUs: Partial<ContactUs>) {
     const newContactUs = new this.ContactUsModel(contactUs);

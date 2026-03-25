@@ -4,7 +4,10 @@ import { SchemaTypes } from 'mongoose';
 @Schema({ timestamps: true })
 export class Comment {
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Blog' })
-  blogId: string;
+  blog: string;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Comment' })
+  reply: string;
 
   @Prop()
   name: string;

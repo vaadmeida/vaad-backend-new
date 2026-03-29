@@ -75,7 +75,7 @@ export class AuthController {
         JSON.stringify({ token, email: signUpData.email }),
       );
 
-      const link = `${this.FRONTEND_USER_BASEURL}/verify-email?data=${encodedEmailData}`;
+      const link = `${this.FRONTEND_USER_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
 
       this.notificationService.sendEmail({
         email: user.email,

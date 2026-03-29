@@ -71,7 +71,7 @@ export class MediaAuthController {
       const encodedEmailData = base64Encode(
         JSON.stringify({ token, email: signUpData.email }),
       );
-      const link = `${this.configService.get('FRONTEND_MEDIA_PARTNER_BASEURL')}/verify-email?data=${encodedEmailData}`;
+      const link = `${this.FRONTEND_MEDIA_PARTNER_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
 
       return { profile: user, token, link };
     });

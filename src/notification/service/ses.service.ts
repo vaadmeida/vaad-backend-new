@@ -9,8 +9,6 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
 @Injectable()
 export class SesService {
@@ -19,10 +17,7 @@ export class SesService {
 
   private readonly sesClient: SESClient;
 
-  constructor(
-    private readonly configService: ConfigService,
-    @InjectQueue('EMAIL_QUEUE') private mailQueue: Queue,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     this.emailSender = this.configService.getOrThrow('EMAIL_SENDER');
 
     this.sesClient = new SESClient({

@@ -12,10 +12,16 @@ export class CacheService {
   constructor(private readonly configService: ConfigService) {
     const redisInstance = new Redis(
       this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_URL),
-    ).on('connect', () => {
-      this.logger.debug('CONNECTED TO REDIS SERVER');
-      this.client = redisInstance;
-    });
+    )
+
+      .on('connect', () => {
+        this.logger.debug('CONNECTED TO REDIS SERVER');
+
+        this.client = redisInstance;
+      })
+      .on('error', (err) => {
+        this.logger.error(`REDIS CONNECTION ERROR: ${err.message}`);
+      });
   }
   getClient(): Redis {
     return this.client;

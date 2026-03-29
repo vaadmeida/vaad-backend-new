@@ -5,6 +5,12 @@ import { SesService } from './service/ses.service';
 import { BullModule } from '@nestjs/bullmq';
 import { EmailProcessor } from './processor/email.processor';
 import { EmailSecondProcessor } from './processor/second-email.processor';
+import { RedisOptions } from 'ioredis';
+
+const connection: RedisOptions = {
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+};
 
 @Module({
   exports: [NotificationService],
@@ -19,11 +25,11 @@ import { EmailSecondProcessor } from './processor/second-email.processor';
     BullModule.registerQueue(
       {
         name: 'EMAIL_QUEUE',
-        connection: { host: 'localhost', port: 6379 },
+        connection,
       },
       {
         name: 'IN_APP_MESSAGE_QUEUE',
-        connection: { host: 'localhost', port: 6379 },
+        connection,
       },
     ),
   ],

@@ -19,6 +19,10 @@ export class NotificationService {
     subject: string;
     template: string;
   }) {
-    await this.emailQueue.add('send-welcome', { email, subject, template });
+    if (process.env.NODE_ENV === 'production') {
+      await this.emailQueue.add('send-welcome', { email, subject, template });
+    } else {
+      await this.sesService.sendEmail({ email, subject, template });
+    }
   }
 }

@@ -54,8 +54,8 @@ export class Billboard {
   @Prop({ type: String, enum: BillBoardOrientationEnum, required: true })
   orientation: BillBoardOrientationEnum;
 
-  @Prop({ type: String, enum: BillboardTargetAudience, required: true })
-  targetAudience: BillboardTargetAudience;
+  @Prop({ type: [String], enum: BillboardTargetAudience, required: true })
+  targetAudience: BillboardTargetAudience[];
 
   @Prop({ type: [String] })
   photos: string[];

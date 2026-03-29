@@ -21,8 +21,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1017.0",
+    "@aws-sdk/client-ses": "^3.1019.0",
     "@aws-sdk/lib-storage": "^3.1017.0",
     "@nest-lab/throttler-storage-redis": "^1.2.0",
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
@@ -32,6 +34,7 @@
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "bullmq": "^5.71.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "express": "^5.2.1",

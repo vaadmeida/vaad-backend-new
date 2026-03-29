@@ -10,8 +10,6 @@ import { Billboard } from '../schema/billboard.schema';
 import { Model } from 'mongoose';
 import {
   BillBoardOrientationEnum,
-  BillboardProductType,
-  BillboardMediaTypeEnum,
   BillboardPrintProductType,
   BillboardLandmark,
   BillboardTargetAudience,
@@ -20,6 +18,7 @@ import {
 import { NigeriaStateCityMap } from '../dto/state-city.dto';
 import { FavoriteBillboardService } from './favorite-billboard.service';
 import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
+import { mediaAndProductsTypes } from '../dto/media-type.dto';
 
 @Injectable()
 export class BillboardService {
@@ -32,9 +31,8 @@ export class BillboardService {
   assets() {
     return {
       services: Object.values(BillboardServiceCategory),
-      mediaType: Object.values(BillboardMediaTypeEnum),
+      mediaAndProductsTypes,
       orientation: Object.values(BillBoardOrientationEnum),
-      productType: Object.values(BillboardProductType),
       printProductType: Object.values(BillboardPrintProductType),
       landmarks: Object.values(BillboardLandmark),
       statesAndCites: NigeriaStateCityMap,

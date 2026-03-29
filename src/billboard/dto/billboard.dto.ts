@@ -91,10 +91,10 @@ export class CreateBillboardDTO {
   @IsNotEmpty()
   orientation: BillBoardOrientationEnum;
 
-  @ApiProperty({ enum: BillboardTargetAudience })
-  @IsEnum(BillboardTargetAudience)
+  @ApiProperty({ enum: BillboardTargetAudience, isArray: true })
+  @IsEnum(BillboardTargetAudience, { each: true })
   @IsNotEmpty()
-  targetAudience: BillboardTargetAudience;
+  targetAudience: BillboardTargetAudience[];
 
   @ApiProperty({ type: [String] })
   @IsArray()

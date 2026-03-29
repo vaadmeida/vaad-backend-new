@@ -28,6 +28,8 @@ import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
 import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
 import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
+import { NotificationService } from 'src/notification/service/notification.service';
+import { UserTemplateService } from '../service/user-template.service';
 
 const role = RolesEnum.USER;
 
@@ -35,13 +37,20 @@ const role = RolesEnum.USER;
 @Controller('auth/users')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+  private readonly FRONTEND_USER_BASEURL: string;
 
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
-  ) {}
+    private readonly notificationService: NotificationService,
+    private readonly userTemplateService: UserTemplateService,
+  ) {
+    this.FRONTEND_USER_BASEURL = configService.getOrThrow(
+      'FRONTEND_USER_BASEURL',
+    );
+  }
 
   @Post('sign-up')
   async userSignUp(@Body() { password, ...signUpData }: UserSingUpDto) {
@@ -65,7 +74,14 @@ export class AuthController {
       const encodedEmailData = base64Encode(
         JSON.stringify({ token, email: signUpData.email }),
       );
-      const link = `${this.configService.get('FRONTEND_BASEURL')}/verify-email?data=${encodedEmailData}`;
+
+      const link = `${this.FRONTEND_USER_BASEURL}/verify-email?data=${encodedEmailData}`;
+
+      this.notificationService.sendEmail({
+        email: user.email,
+        subject: 'Verify your email',
+        template: this.userTemplateService.getSignUp(link),
+      });
 
       return { profile: user, token, link };
     });

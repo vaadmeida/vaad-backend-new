@@ -59,7 +59,6 @@ export class BillboardController {
     @Query() pg: PaginationFilter,
     @Token() token: TokenDto,
   ) {
-    console.log({ payload, pg, token });
     return this.billboardService.searchBillboards(
       payload,
       pg,

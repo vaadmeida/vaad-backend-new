@@ -4,9 +4,20 @@ import { UsersModule } from '../users/users.module';
 import { OtpModule } from '../../libs/util/src/otp/otp.module';
 import { MediaAuthController } from './controller/media-partner-auth.controller';
 import { MediaPartnerModule } from 'src/media-partner/media-partner.module';
+import { AdminAuthController } from './controller/auth-admin.controller';
+import { AdminModule } from 'src/admin/admin.module';
+import { NotificationModule } from 'src/notification/notification.module';
+import { UserTemplateService } from './service/user-template.service';
 
 @Module({
-  controllers: [AuthController, MediaAuthController],
-  imports: [UsersModule, OtpModule, MediaPartnerModule],
+  providers: [UserTemplateService],
+  controllers: [AuthController, MediaAuthController, AdminAuthController],
+  imports: [
+    UsersModule,
+    OtpModule,
+    MediaPartnerModule,
+    AdminModule,
+    NotificationModule,
+  ],
 })
 export class AuthModule {}

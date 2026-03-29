@@ -30,19 +30,24 @@ import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 import { MediaPartnerService } from 'src/media-partner/service/media-partner.service';
 
-const role = RolesEnum.USER;
+const role = RolesEnum.MEDIA_PARTNER;
 
 @ApiTags('Media Partner Auth')
 @Controller('auth/media-partners')
 export class MediaAuthController {
   private readonly logger = new Logger(MediaAuthController.name);
+  private readonly FRONTEND_MEDIA_PARTNER_BASEURL: string;
 
   constructor(
     private readonly authService: AuthService,
     private readonly userService: MediaPartnerService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.FRONTEND_MEDIA_PARTNER_BASEURL = configService.getOrThrow(
+      'FRONTEND_MEDIA_PARTNER_BASEURL',
+    );
+  }
 
   @Post('sign-up')
   async userSignUp(@Body() { password, ...signUpData }: MediaPartnerSingUpDto) {

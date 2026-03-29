@@ -12,6 +12,11 @@ export class CacheService {
   constructor(private readonly configService: ConfigService) {
     const redisInstance = new Redis(
       this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_URL),
+      {
+        tls: { rejectUnauthorized: false },
+        maxRetriesPerRequest: null,
+        enableReadyCheck: true,
+      },
     )
 
       .on('connect', () => {

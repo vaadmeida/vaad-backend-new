@@ -202,13 +202,10 @@ export class SearchBillboardFilter {
 
 export class PaginationFilter {
   @IsNumber()
-  @IsPositive()
   @IsOptional()
   limit: number = 10;
 
   @ApiProperty()
-  @IsNumber()
-  @IsPositive()
   @IsOptional()
   page: number = 1;
 }

@@ -10,9 +10,10 @@ export class CacheService {
   private readonly logger = new Logger(CacheService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const redisInstance = new Redis(
-      this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_HOST),
-    ).on('connect', () => {
+    const redisInstance = new Redis({
+      host: this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_HOST),
+      port: this.configService.getOrThrow<number>(EnvConfigEnum.REDIS_PORT),
+    }).on('connect', () => {
       this.logger.debug('CONNECTED TO REDIS SERVER');
       this.client = redisInstance;
     });

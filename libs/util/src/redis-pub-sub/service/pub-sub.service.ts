@@ -13,19 +13,27 @@ export class RedisPubSubService implements OnModuleDestroy {
   constructor(private readonly configService: ConfigService) {
     // We need two separate connections: one for publishing, one for subscribing
     this.publisher = new Redis(
-      this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_HOST),
+      this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_URL),
     );
     this.subscriber = new Redis(
-      this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_HOST),
+      this.configService.getOrThrow<string>(EnvConfigEnum.REDIS_URL),
     );
 
-    this.publisher.on('connect', () => {
-      this.logger.debug('REDIS PUBLISHER CONNECTED');
-    });
+    this.publisher
+      .on('connect', () => {
+        this.logger.debug('REDIS PUBLISHER CONNECTED');
+      })
+      .on('error', (err) => {
+        this.logger.error(`REDIS CONNECTION ERROR: ${err.message}`);
+      });
 
-    this.subscriber.on('connect', () => {
-      this.logger.debug('REDIS SUBSCRIBER CONNECTED');
-    });
+    this.subscriber
+      .on('connect', () => {
+        this.logger.debug('REDIS SUBSCRIBER CONNECTED');
+      })
+      .on('error', (err) => {
+        this.logger.error(`REDIS CONNECTION ERROR: ${err.message}`);
+      });
 
     for (const channel of Object.values(RedisChannelEnum)) {
       this.subscriber.subscribe(channel);

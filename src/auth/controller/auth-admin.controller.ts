@@ -12,7 +12,6 @@ import {
   ForgetPasswordDto,
   GenerateTokenDto,
   LoginDto,
-  MediaPartnerSingUpDto,
   ResetPasswordDto,
   UserSingUpDto,
 } from '../dto/user-auth.dto';
@@ -50,7 +49,7 @@ export class AdminAuthController {
   }
 
   @Post('create')
-  async userSignUp(@Body() { password, ...signUpData }: MediaPartnerSingUpDto) {
+  async userSignUp(@Body() { password, ...signUpData }: any) {
     const session = await this.adminService.AdminModel.startSession();
     return session.withTransaction(async () => {
       const user = await this.adminService.createUser(signUpData, session);
@@ -91,7 +90,7 @@ export class AdminAuthController {
       );
 
       if (user.status !== UserStatusEnum.ACTIVE) {
-        throw new BadRequestException('User is not active');
+        throw new BadRequestException('Admin is not active');
       }
 
       return { profile: user, token };

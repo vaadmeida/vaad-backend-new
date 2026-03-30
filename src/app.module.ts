@@ -78,6 +78,10 @@ export class AppModule implements NestModule {
           method: RequestMethod.POST,
         },
         //
+        { path: '/auth/admins/generate-tokens', method: RequestMethod.POST },
+        { path: '/auth/admins/login', method: RequestMethod.POST },
+        { path: '/auth/admins/forget-password', method: RequestMethod.POST },
+        //
         { path: '/requests/media-plans', method: RequestMethod.POST },
         { path: '/billboards/assets', method: RequestMethod.GET },
         { path: '/billboards/search', method: RequestMethod.GET },

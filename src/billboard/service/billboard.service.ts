@@ -50,6 +50,12 @@ export class BillboardService {
     });
   }
 
+  async deleteBillboard(id: string) {
+    return this.BillBoardModel.findByIdAndDelete(id).orFail(
+      new NotFoundException('Billboard not found'),
+    );
+  }
+
   async getOneBillboard(id: string) {
     return this.BillBoardModel.findById(id).orFail(
       new NotFoundException('Billboard not found'),

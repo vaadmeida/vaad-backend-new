@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsEnum,
   IsNotEmpty,
+  isNumber,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -201,7 +202,7 @@ export class SearchBillboardFilter {
 }
 
 export class PaginationFilter {
-  @IsNumber()
+  @ApiProperty()
   @IsOptional()
   limit: number = 10;
 

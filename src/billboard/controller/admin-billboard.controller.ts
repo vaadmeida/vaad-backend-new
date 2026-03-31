@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -22,20 +23,15 @@ import { FavoriteBillboardService } from './../service/favorite-billboard.servic
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
 
-@ApiTags('Billboards')
-@Controller('billboards')
-export class BillboardController {
+@ApiTags('Admin Billboards')
+@Controller('billboards/admins')
+export class AdminBillboardController {
   constructor(
     private readonly billboardService: BillboardService,
     private readonly favoriteBillboardService: FavoriteBillboardService,
   ) {}
 
-  @Get('/assets')
-  assets() {
-    return this.billboardService.assets();
-  }
-
-  @Post('/admins')
+  @Post('')
   adminCreateBillboard(@Body() payload: CreateBillboardDTO) {
     return this.billboardService.createBillboard(payload);
   }
@@ -46,6 +42,11 @@ export class BillboardController {
     @Body() payload: UpdateBillboardDTO,
   ) {
     return this.billboardService.updateBillboard(id, payload);
+  }
+
+  @Delete('/:id')
+  deleteBillboard(@Param('id') id: string) {
+    return this.billboardService.deleteBillboard(id);
   }
 
   @Post('/partners')

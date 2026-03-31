@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BillboardService } from './service/billboard.service';
-import { BillboardController } from './controller/billboard.controller';
+import { BillboardController } from './controller/user-billboard.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Billboard, BillboardSchema } from './schema/billboard.schema';
 import {
@@ -8,9 +8,15 @@ import {
   FavoriteBillboardSchema,
 } from './schema/favorite-billboard.schema';
 import { FavoriteBillboardService } from './service/favorite-billboard.service';
+import { MediaPartnerBillboardController } from './controller/partner-billboard.controller';
+import { AdminBillboardController } from './controller/admin-billboard.controller';
 
 @Module({
-  controllers: [BillboardController],
+  controllers: [
+    BillboardController,
+    AdminBillboardController,
+    MediaPartnerBillboardController,
+  ],
   providers: [BillboardService, FavoriteBillboardService],
   imports: [
     MongooseModule.forFeature([

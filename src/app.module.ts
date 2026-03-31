@@ -85,6 +85,7 @@ export class AppModule implements NestModule {
         { path: '/requests/media-plans', method: RequestMethod.POST },
         { path: '/billboards/assets', method: RequestMethod.GET },
         { path: '/billboards/search', method: RequestMethod.GET },
+        { path: '/billboards/explore', method: RequestMethod.GET },
         { path: '/newsletters/join', method: RequestMethod.POST },
         { path: '/newsletters/leave', method: RequestMethod.POST },
         { path: '/contact-us', method: RequestMethod.POST },

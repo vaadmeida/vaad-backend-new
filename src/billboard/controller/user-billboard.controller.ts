@@ -1,27 +1,12 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  CreateBillboardDTO,
-  PaginationFilter,
-  SearchBillboardFilter,
-} from '../dto/billboard.dto';
+import { PaginationFilter, SearchBillboardFilter } from '../dto/billboard.dto';
 import { BillboardService } from '../service/billboard.service';
-import {
-  LikeBillboardDto,
-  UpdateBillboardDTO,
-} from '../dto/update-billboard.dto';
+import { LikeBillboardDto } from '../dto/update-billboard.dto';
 import { FavoriteBillboardService } from '../service/favorite-billboard.service';
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
+import { BillboardMediaTypeEnum } from '../enum/billboard.enum';
 
 @ApiTags('Billboards')
 @Controller('billboards')
@@ -36,17 +21,55 @@ export class BillboardController {
     return this.billboardService.assets();
   }
 
-  @Get('/search')
-  searchBillboards(
+  @Get('/explore')
+  async searchBillboards(
     @Query() payload: SearchBillboardFilter,
     @Query() pg: PaginationFilter,
     @Token() token: TokenDto,
   ) {
-    return this.billboardService.searchBillboards(
+    const result = await this.billboardService.searchBillboards(
       payload,
       pg,
       token?.identifier,
     );
+
+    return { result };
+  }
+
+  @Get('/search')
+  async ladingPageBillboards(
+    @Query() payload: SearchBillboardFilter,
+    @Token() token: TokenDto,
+  ) {
+    const result = await this.billboardService.searchBillboards(
+      payload,
+      { page: 1, limit: 500 },
+      token?.identifier,
+    );
+
+    const landingPageBillboards = {
+      [BillboardMediaTypeEnum.StaticBillboard]: result.foundItems.filter(
+        (item) => item.mediaType === BillboardMediaTypeEnum.StaticBillboard,
+      ),
+
+      [BillboardMediaTypeEnum.LEDBillboard]: result.foundItems.filter(
+        (item) => item.mediaType === BillboardMediaTypeEnum.LEDBillboard,
+      ),
+
+      [BillboardMediaTypeEnum.TransitAdvertising]: result.foundItems.filter(
+        (item) => item.mediaType === BillboardMediaTypeEnum.TransitAdvertising,
+      ),
+
+      [BillboardMediaTypeEnum.LamppostAdvertising]: result.foundItems.filter(
+        (item) => item.mediaType === BillboardMediaTypeEnum.LamppostAdvertising,
+      ),
+
+      [BillboardMediaTypeEnum.AirportAdvertising]: result.foundItems.filter(
+        (item) => item.mediaType === BillboardMediaTypeEnum.AirportAdvertising,
+      ),
+    };
+
+    return { landingPageBillboards };
   }
 
   @Get('/:id')
@@ -59,7 +82,6 @@ export class BillboardController {
     @Token() { identifier }: TokenDto,
     @Body() { billboardId }: LikeBillboardDto,
   ) {
-    console.log({ identifier, billboardId });
     return this.favoriteBillboardService.saveFavorite(identifier, billboardId);
   }
 }

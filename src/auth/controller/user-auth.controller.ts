@@ -62,8 +62,6 @@ export class AuthController {
 
       const token = randomDigits(10);
 
-      this.logger.debug(JSON.stringify({ token }));
-
       await this.otpService.hashAndSaveOtp({
         email: user.email,
         code: token,
@@ -77,13 +75,13 @@ export class AuthController {
 
       const link = `${this.FRONTEND_USER_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
 
-      this.notificationService.sendEmail({
+      await this.notificationService.sendEmail({
         email: user.email,
         subject: 'Verify your email',
         template: this.userTemplateService.getSignUp(link),
       });
 
-      return { profile: user, token, link };
+      return { profile: user };
     });
   }
 

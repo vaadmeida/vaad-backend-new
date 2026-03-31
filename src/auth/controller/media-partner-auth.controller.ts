@@ -29,6 +29,8 @@ import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
 import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 import { MediaPartnerService } from 'src/media-partner/service/media-partner.service';
+import { NotificationService } from 'src/notification/service/notification.service';
+import { UserTemplateService } from '../service/user-template.service';
 
 const role = RolesEnum.MEDIA_PARTNER;
 
@@ -43,6 +45,8 @@ export class MediaAuthController {
     private readonly userService: MediaPartnerService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
+    private readonly notificationService: NotificationService,
+    private readonly userTemplateService: UserTemplateService,
   ) {
     this.FRONTEND_MEDIA_PARTNER_BASEURL = configService.getOrThrow(
       'FRONTEND_MEDIA_PARTNER_BASEURL',
@@ -59,8 +63,6 @@ export class MediaAuthController {
 
       const token = randomDigits(10);
 
-      this.logger.debug(JSON.stringify({ token }));
-
       await this.otpService.hashAndSaveOtp({
         email: user.email,
         code: token,
@@ -71,9 +73,16 @@ export class MediaAuthController {
       const encodedEmailData = base64Encode(
         JSON.stringify({ token, email: signUpData.email }),
       );
+
       const link = `${this.FRONTEND_MEDIA_PARTNER_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
 
-      return { profile: user, token, link };
+      await this.notificationService.sendEmail({
+        email: user.email,
+        subject: 'Verify your email',
+        template: this.userTemplateService.getSignUp(link),
+      });
+
+      return { profile: user };
     });
   }
 
@@ -91,7 +100,7 @@ export class MediaAuthController {
       );
 
       if (user.status !== UserStatusEnum.ACTIVE) {
-        throw new BadRequestException('User is not active');
+        throw new BadRequestException('Account is not active');
       }
 
       return { profile: user, token };

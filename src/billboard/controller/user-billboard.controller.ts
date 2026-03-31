@@ -29,7 +29,7 @@ export class BillboardController {
   ) {
     const result = await this.billboardService.searchBillboards(
       payload,
-      pg,
+      { page: +pg.page, limit: +pg.limit },
       token?.identifier,
     );
 

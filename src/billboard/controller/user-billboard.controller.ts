@@ -63,10 +63,6 @@ export class BillboardController {
       [BillboardMediaTypeEnum.AirportAdvertising]: result.foundItems.filter(
         (item) => item.mediaType === BillboardMediaTypeEnum.AirportAdvertising,
       ),
-
-      [BillboardMediaTypeEnum.BusShelter]: result.foundItems.filter(
-        (item) => item.mediaType === BillboardMediaTypeEnum.BusShelter,
-      ),
     };
 
     return { landingPageBillboards };

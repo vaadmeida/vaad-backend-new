@@ -56,10 +56,6 @@ export class BillboardController {
         (item) => item.mediaType === BillboardMediaTypeEnum.LEDBillboard,
       ),
 
-      [BillboardMediaTypeEnum.TransitAdvertising]: result.foundItems.filter(
-        (item) => item.mediaType === BillboardMediaTypeEnum.TransitAdvertising,
-      ),
-
       [BillboardMediaTypeEnum.LamppostAdvertising]: result.foundItems.filter(
         (item) => item.mediaType === BillboardMediaTypeEnum.LamppostAdvertising,
       ),

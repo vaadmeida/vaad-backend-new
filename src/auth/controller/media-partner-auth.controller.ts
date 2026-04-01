@@ -74,7 +74,7 @@ export class MediaAuthController {
         JSON.stringify({ token, email: signUpData.email }),
       );
 
-      const link = `${this.FRONTEND_MEDIA_PARTNER_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
+      const link = `${this.FRONTEND_MEDIA_PARTNER_BASEURL}/auth/verify-email?data=${encodedEmailData}`;
 
       await this.notificationService.sendEmail({
         email: user.email,

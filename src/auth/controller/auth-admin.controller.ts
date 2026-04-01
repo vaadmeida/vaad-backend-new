@@ -70,7 +70,7 @@ export class AdminAuthController {
       const encodedEmailData = base64Encode(
         JSON.stringify({ token, email: signUpData.email }),
       );
-      const link = `${this.FRONTEND_ADMIN_BASEURL}/auth/reset-password?data=${encodedEmailData}`;
+      const link = `${this.FRONTEND_ADMIN_BASEURL}/auth/verify-email?data=${encodedEmailData}`;
 
       return { profile: user, token, link };
     });

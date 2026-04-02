@@ -36,7 +36,7 @@ export class UserSingUpDto {
     description: 'The phone number of the user',
   })
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
   phoneNumber: string;
 
   @ApiProperty({

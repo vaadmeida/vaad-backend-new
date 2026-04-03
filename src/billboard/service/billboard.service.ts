@@ -161,4 +161,14 @@ export class BillboardService {
 
     return response;
   }
+
+  analytics() {
+    return {
+      totalBoards: 1,
+      pendingBoards: 0,
+      declinedBoards: 1,
+      approvedBoards: 0,
+      totalMediaPartners: 1,
+    };
+  }
 }

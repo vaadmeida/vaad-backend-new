@@ -15,10 +15,7 @@ import {
   SearchBillboardFilter,
 } from '../dto/billboard.dto';
 import { BillboardService } from '../service/billboard.service';
-import {
-  LikeBillboardDto,
-  UpdateBillboardDTO,
-} from '../dto/update-billboard.dto';
+import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 import { FavoriteBillboardService } from './../service/favorite-billboard.service';
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
@@ -70,14 +67,5 @@ export class MediaPartnerBillboardController {
   @Get('/:id')
   oneBillboard(@Param('id') id: string) {
     return this.billboardService.getOneBillboard(id);
-  }
-
-  @Post('favorite')
-  likeBillboard(
-    @Token() { identifier }: TokenDto,
-    @Body() { billboardId }: LikeBillboardDto,
-  ) {
-    console.log({ identifier, billboardId });
-    return this.favoriteBillboardService.saveFavorite(identifier, billboardId);
   }
 }

@@ -12,7 +12,18 @@ async function bootstrap() {
   app.set('trust proxy', 'loopback');
   app.use(helmet());
   app.enableShutdownHooks();
-  app.enableCors({ credentials: true });
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+    exposedHeaders: ['Set-Cookie'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+    ],
+  });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ResponseLoggerInterceptor());
 

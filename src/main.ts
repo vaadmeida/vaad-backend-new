@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 import { ResponseLoggerInterceptor } from '@app/util/interceptor/response-logger.interceptor';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,6 +31,7 @@ async function bootstrap() {
       'Accept',
     ],
   });
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ResponseLoggerInterceptor());
 

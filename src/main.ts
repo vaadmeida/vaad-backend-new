@@ -12,7 +12,7 @@ async function bootstrap() {
   app.set('trust proxy', 'loopback');
   app.use(helmet());
   app.enableShutdownHooks();
-  app.enableCors();
+  app.enableCors({ credentials: true });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new ResponseLoggerInterceptor());
 

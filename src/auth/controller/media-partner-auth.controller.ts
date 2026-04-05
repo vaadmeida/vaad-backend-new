@@ -6,6 +6,7 @@ import {
   Controller,
   Logger,
   Post,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -31,6 +32,8 @@ import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 import { MediaPartnerService } from 'src/media-partner/service/media-partner.service';
 import { NotificationService } from 'src/notification/service/notification.service';
 import { UserTemplateService } from '../service/user-template.service';
+import { addCookieResponse } from '../helper/add-cookies.helper';
+import type { Response } from 'express';
 
 const role = RolesEnum.MEDIA_PARTNER;
 
@@ -87,10 +90,13 @@ export class MediaAuthController {
   }
 
   @Post('login')
-  async login(@Body() { password, email }: LoginDto) {
+  async login(
+    @Res() response: Response,
+    @Body() { password, email }: LoginDto,
+  ) {
     try {
       const user = await this.userService.findOne({ email });
-      const token = await this.authService.login(
+      const tokens = await this.authService.login(
         user._id.toString(),
         password,
         {
@@ -103,7 +109,7 @@ export class MediaAuthController {
         throw new BadRequestException('Account is not active');
       }
 
-      return { profile: user, token };
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.warn(error);
       throw new UnauthorizedException('Email or password is not valid');
@@ -152,7 +158,10 @@ export class MediaAuthController {
   }
 
   @Post('/generate-tokens')
-  async generateTokens(@Body() { token, email }: GenerateTokenDto) {
+  async generateTokens(
+    @Res() response: Response,
+    @Body() { token, email }: GenerateTokenDto,
+  ) {
     try {
       await this.otpService.verifyHashedOtp({
         email,
@@ -162,10 +171,15 @@ export class MediaAuthController {
       const user = await this.userService.findOne({ email });
       user.status = UserStatusEnum.ACTIVE;
       await user.save();
-      return this.authService.generateTokens(user._id.toString(), {
-        email,
-        role,
-      });
+      const tokens = await this.authService.generateTokens(
+        user._id.toString(),
+        {
+          email,
+          role,
+        },
+      );
+
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.error(error.message);
       throw new UnauthorizedException('Invalid token');

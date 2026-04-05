@@ -6,6 +6,7 @@ import {
   Controller,
   Logger,
   Post,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -28,6 +29,8 @@ import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
 import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 import { AdminService } from 'src/admin/service/admin.service';
+import { addCookieResponse } from '../helper/add-cookies.helper';
+import type { Response } from 'express';
 
 const role = RolesEnum.ADMIN;
 
@@ -77,10 +80,13 @@ export class AdminAuthController {
   }
 
   @Post('login')
-  async login(@Body() { password, email }: LoginDto) {
+  async login(
+    @Res() response: Response,
+    @Body() { password, email }: LoginDto,
+  ) {
     try {
       const user = await this.adminService.findOne({ email });
-      const token = await this.authService.login(
+      const tokens = await this.authService.login(
         user._id.toString(),
         password,
         {
@@ -93,7 +99,7 @@ export class AdminAuthController {
         throw new BadRequestException('Admin is not active');
       }
 
-      return { profile: user, token };
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.warn(error);
       throw new UnauthorizedException('Email or password is not valid');
@@ -121,8 +127,6 @@ export class AdminAuthController {
       const user = await this.adminService.findOne({ email });
       const token = randomDigits(10);
 
-      this.logger.debug(JSON.stringify({ token }));
-
       await this.otpService.hashAndSaveOtp({
         email: user.email,
         code: token,
@@ -134,7 +138,7 @@ export class AdminAuthController {
       // const emailData = { token, email };
       // const frontend = '';
 
-      return { success: true, token, email };
+      return { success: true };
     } catch (error) {
       this.logger.error(error.message);
       return;
@@ -142,7 +146,10 @@ export class AdminAuthController {
   }
 
   @Post('/generate-tokens')
-  async generateTokens(@Body() { token, email }: GenerateTokenDto) {
+  async generateTokens(
+    @Res() response: Response,
+    @Body() { token, email }: GenerateTokenDto,
+  ) {
     try {
       await this.otpService.verifyHashedOtp({
         email,
@@ -152,10 +159,14 @@ export class AdminAuthController {
       const user = await this.adminService.findOne({ email });
       user.status = UserStatusEnum.ACTIVE;
       await user.save();
-      return this.authService.generateTokens(user._id.toString(), {
-        email,
-        role,
-      });
+      const tokens = await this.authService.generateTokens(
+        user._id.toString(),
+        {
+          email,
+          role,
+        },
+      );
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.error(error.message);
       throw new UnauthorizedException('Invalid token');

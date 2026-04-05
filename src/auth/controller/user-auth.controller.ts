@@ -6,6 +6,7 @@ import {
   Controller,
   Logger,
   Post,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -30,6 +31,8 @@ import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
 import { NotificationService } from 'src/notification/service/notification.service';
 import { UserTemplateService } from '../service/user-template.service';
+import type { Response } from 'express';
+import { addCookieResponse } from '../helper/add-cookies.helper';
 
 const role = RolesEnum.USER;
 
@@ -86,10 +89,13 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() { password, email }: LoginDto) {
+  async login(
+    @Res() response: Response,
+    @Body() { password, email }: LoginDto,
+  ) {
     try {
       const user = await this.userService.findOne({ email });
-      const token = await this.authService.login(
+      const tokens = await this.authService.login(
         user._id.toString(),
         password,
         {
@@ -102,7 +108,7 @@ export class AuthController {
         throw new BadRequestException('User is not active');
       }
 
-      return { profile: user, token };
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.warn(error);
       throw new UnauthorizedException('Email or password is not valid');
@@ -143,7 +149,7 @@ export class AuthController {
       // const emailData = { token, email };
       // const frontend = '';
 
-      return { success: true, token, email };
+      return { success: true };
     } catch (error) {
       this.logger.error(error.message);
       return;
@@ -151,7 +157,10 @@ export class AuthController {
   }
 
   @Post('/generate-tokens')
-  async generateTokens(@Body() { token, email }: GenerateTokenDto) {
+  async generateTokens(
+    @Res() response: Response,
+    @Body() { token, email }: GenerateTokenDto,
+  ) {
     try {
       await this.otpService.verifyHashedOtp({
         email,
@@ -161,10 +170,15 @@ export class AuthController {
       const user = await this.userService.findOne({ email });
       user.status = UserStatusEnum.ACTIVE;
       await user.save();
-      return this.authService.generateTokens(user._id.toString(), {
-        email,
-        role,
-      });
+      const tokens = await this.authService.generateTokens(
+        user._id.toString(),
+        {
+          email,
+          role,
+        },
+      );
+
+      addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.error(error.message);
       throw new UnauthorizedException('Invalid token');

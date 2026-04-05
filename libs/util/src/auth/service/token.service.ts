@@ -106,7 +106,9 @@ export class TokenService {
       case !!req.headers.cookie:
         req.headers.cookie.split('; ').forEach((item) => {
           const data = item.split('=');
-          if (data[0] === 'token') token = data[1];
+          if (data[0] === 'accessToken') {
+            token = data[1];
+          }
         });
         break;
       case req.headers.authorization?.startsWith('Bearer'):

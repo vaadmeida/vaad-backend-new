@@ -1,16 +1,16 @@
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 
 export const addCookieResponse = (
   response: Response,
   tokens: { accessToken: string; refreshToken: string },
   data: any = {},
 ) => {
-  const cookieOptions = {
+  const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict' as const,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    sameSite: 'none',
   };
+
   response.cookie('accessToken', tokens.accessToken, cookieOptions);
 
   response.cookie('refreshToken', tokens.refreshToken, cookieOptions);

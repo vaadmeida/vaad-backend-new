@@ -13,6 +13,7 @@ import {
   ForgetPasswordDto,
   GenerateTokenDto,
   LoginDto,
+  RefreshTokenDto,
   ResetPasswordDto,
   UserSingUpDto,
 } from '../dto/user-auth.dto';
@@ -181,6 +182,24 @@ export class AuthController {
       addCookieResponse(response, tokens, { profile: user });
     } catch (error) {
       this.logger.error(error.message);
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  @Post('/refresh-tokens')
+  async refreshTokens(
+    @Res() response: Response,
+    @Body() { refreshToken }: RefreshTokenDto,
+  ) {
+    try {
+      const { identifier, ...tokens } =
+        await this.authService.refreshToken(refreshToken);
+
+      const user = await this.userService.UserModel.findById(identifier);
+
+      addCookieResponse(response, tokens, { profile: user });
+    } catch (error) {
+      this.logger.error(error);
       throw new UnauthorizedException('Invalid token');
     }
   }

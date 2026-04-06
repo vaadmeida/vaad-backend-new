@@ -3,7 +3,6 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsPhoneNumber,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
@@ -139,4 +138,15 @@ export class MediaPartnerSingUpDto {
   @IsNotEmpty()
   @IsBoolean()
   termsAndCondition: boolean;
+}
+
+export class RefreshTokenDto {
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiNjljYWVlZjgzZmQ2MDllYzE0Zjc1YzhjIiwiaWF0IjoxNzc1Mzg5NzM5LCJleHAiOjE3NzU0NzYxMzl9.myE0UmzvpNDwKUsC6Xn5zsyWHrrSCEUUSNqBEE0dL-g',
+    description: 'The JWT token containing user information',
+  })
+  @IsNotEmpty()
+  @IsString()
+  refreshToken: string;
 }

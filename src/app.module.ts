@@ -66,6 +66,7 @@ export class AppModule implements NestModule {
         { path: '/auth/users/generate-tokens', method: RequestMethod.POST },
         { path: '/auth/users/login', method: RequestMethod.POST },
         { path: '/auth/users/forget-password', method: RequestMethod.POST },
+        { path: '/auth/users/refresh-tokens', method: RequestMethod.POST },
         //
         { path: '/auth/media-partners/sign-up', method: RequestMethod.POST },
         {
@@ -77,10 +78,15 @@ export class AppModule implements NestModule {
           path: '/auth/media-partners/forget-password',
           method: RequestMethod.POST,
         },
+        {
+          path: '/auth/media-partners/refresh-tokens',
+          method: RequestMethod.POST,
+        },
         //
         { path: '/auth/admins/generate-tokens', method: RequestMethod.POST },
         { path: '/auth/admins/login', method: RequestMethod.POST },
         { path: '/auth/admins/forget-password', method: RequestMethod.POST },
+        { path: '/auth/admins/refresh-tokens', method: RequestMethod.POST },
         //
         { path: '/requests/media-plans', method: RequestMethod.POST },
         { path: '/billboards/assets', method: RequestMethod.GET },

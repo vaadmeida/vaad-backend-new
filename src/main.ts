@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import { ResponseLoggerInterceptor } from '@app/util/interceptor/response-logger.interceptor';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import { CookieOptions } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

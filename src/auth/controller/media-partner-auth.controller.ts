@@ -14,6 +14,7 @@ import {
   GenerateTokenDto,
   LoginDto,
   MediaPartnerSingUpDto,
+  RefreshTokenDto,
   ResetPasswordDto,
   UserSingUpDto,
 } from '../dto/user-auth.dto';
@@ -45,7 +46,7 @@ export class MediaAuthController {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: MediaPartnerService,
+    private readonly mediaPartnerService: MediaPartnerService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
     private readonly notificationService: NotificationService,
@@ -58,9 +59,13 @@ export class MediaAuthController {
 
   @Post('sign-up')
   async userSignUp(@Body() { password, ...signUpData }: MediaPartnerSingUpDto) {
-    const session = await this.userService.MediaPartnerModel.startSession();
+    const session =
+      await this.mediaPartnerService.MediaPartnerModel.startSession();
     return session.withTransaction(async () => {
-      const user = await this.userService.createUser(signUpData, session);
+      const user = await this.mediaPartnerService.createUser(
+        signUpData,
+        session,
+      );
 
       await this.authService.signUp(user._id.toString(), password);
 
@@ -95,7 +100,7 @@ export class MediaAuthController {
     @Body() { password, email }: LoginDto,
   ) {
     try {
-      const user = await this.userService.findOne({ email });
+      const user = await this.mediaPartnerService.findOne({ email });
       const tokens = await this.authService.login(
         user._id.toString(),
         password,
@@ -120,7 +125,10 @@ export class MediaAuthController {
   async verifySignUpEmail(@Body() { password, ...signUpData }: UserSingUpDto) {
     const session = await mongoose.startSession();
     return session.withTransaction(async () => {
-      const user = await this.userService.createUser(signUpData, session);
+      const user = await this.mediaPartnerService.createUser(
+        signUpData,
+        session,
+      );
 
       const tokens = await this.authService.signUp(
         user._id.toString(),
@@ -134,7 +142,7 @@ export class MediaAuthController {
   @Post('/forget-password')
   async forgetPassword(@Body() { email }: ForgetPasswordDto) {
     try {
-      const user = await this.userService.findOne({ email });
+      const user = await this.mediaPartnerService.findOne({ email });
       const token = randomDigits(10);
 
       this.logger.debug(JSON.stringify({ token }));
@@ -168,7 +176,7 @@ export class MediaAuthController {
         code: token,
         type: OtpTypeEnum.SIGN_UP,
       });
-      const user = await this.userService.findOne({ email });
+      const user = await this.mediaPartnerService.findOne({ email });
       user.status = UserStatusEnum.ACTIVE;
       await user.save();
       const tokens = await this.authService.generateTokens(
@@ -186,13 +194,32 @@ export class MediaAuthController {
     }
   }
 
+  @Post('/refresh-tokens')
+  async refreshTokens(
+    @Res() response: Response,
+    @Body() { refreshToken }: RefreshTokenDto,
+  ) {
+    try {
+      const { identifier, ...tokens } =
+        await this.authService.refreshToken(refreshToken);
+
+      const user =
+        await this.mediaPartnerService.MediaPartnerModel.findById(identifier);
+
+      addCookieResponse(response, tokens, { profile: user });
+    } catch (error) {
+      this.logger.error(error);
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
   @Post('/reset-password')
   async resetPassword(
     @Body() { password }: ResetPasswordDto,
     @Token() { identifier }: TokenDto,
   ) {
     try {
-      const user = await this.userService.findOne({ id: identifier });
+      const user = await this.mediaPartnerService.findOne({ id: identifier });
 
       await this.authService.changePassword(user._id.toString(), password);
 

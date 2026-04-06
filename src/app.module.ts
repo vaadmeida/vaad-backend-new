@@ -22,6 +22,7 @@ import { MediaPartnerModule } from './media-partner/media-partner.module';
 import { BlogModule } from './blog/blog.module';
 import { FileModule } from './file/file.module';
 import { NotificationModule } from './notification/notification.module';
+import { OrderModule } from './order/order.module';
 
 const envFilePath =
   EnvTypeEnum.Production === process.env['NODE_ENV']
@@ -43,6 +44,7 @@ const envFilePath =
     BlogModule,
     FileModule,
     NotificationModule,
+    OrderModule,
   ],
   controllers: [AppController],
 })

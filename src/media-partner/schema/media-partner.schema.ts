@@ -5,6 +5,9 @@ import { UserStatusEnum } from 'src/users/dto/user.dto';
 @Schema({ timestamps: true })
 export class MediaPartner {
   @Prop()
+  partnerId: string;
+
+  @Prop()
   fullName: string;
 
   @Prop({

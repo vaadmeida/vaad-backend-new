@@ -171,4 +171,8 @@ export class BillboardService {
       totalMediaPartners: 1,
     };
   }
+
+  async getBillboardsByIds(ids: string[]) {
+    return this.BillBoardModel.find({ _id: { $in: ids } });
+  }
 }

@@ -18,6 +18,7 @@ import { AdminBillboardController } from './controller/admin-billboard.controlle
     MediaPartnerBillboardController,
   ],
   providers: [BillboardService, FavoriteBillboardService],
+  exports: [BillboardService],
   imports: [
     MongooseModule.forFeature([
       { name: Billboard.name, schema: BillboardSchema },

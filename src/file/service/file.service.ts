@@ -36,4 +36,8 @@ export class FileService {
 
     return f;
   }
+
+  uploadFiles(files: any[]) {
+    return Promise.all(files.map((file) => this.uploadFile(file)));
+  }
 }

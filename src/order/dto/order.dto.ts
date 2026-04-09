@@ -23,7 +23,7 @@ export class OrderItemDTO {
 
   @ApiProperty()
   @IsDate()
-  @IsNotEmpty()
+  @IsOptional()
   startDate: Date;
 }
 

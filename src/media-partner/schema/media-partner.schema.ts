@@ -4,10 +4,10 @@ import { UserStatusEnum } from 'src/users/dto/user.dto';
 
 @Schema({ timestamps: true })
 export class MediaPartner {
-  @Prop()
+  @Prop({ uppercase: true, trim: true })
   partnerId: string;
 
-  @Prop()
+  @Prop({ transform })
   fullName: string;
 
   @Prop({

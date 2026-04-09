@@ -1,7 +1,14 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { MediaPartnerService } from '../service/media-partner.service';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('media-partner')
+@ApiTags('Media Partner')
+@Controller('media-partners')
 export class MediaPartnerController {
   constructor(private readonly mediaPartnerService: MediaPartnerService) {}
+
+  @Get('ids')
+  async getIds() {
+    return { ids: await this.mediaPartnerService.getPartnerIds() };
+  }
 }

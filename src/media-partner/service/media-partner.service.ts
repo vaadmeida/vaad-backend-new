@@ -37,4 +37,8 @@ export class MediaPartnerService {
 
     return user;
   }
+
+  async getPartnerIds(): Promise<string[]> {
+    return this.MediaPartnerModel.distinct('partnerId');
+  }
 }

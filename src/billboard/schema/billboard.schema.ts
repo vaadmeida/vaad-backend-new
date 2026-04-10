@@ -12,7 +12,7 @@ import { transform } from '@app/util/general/function/pascal-case.function';
 
 @Schema({ timestamps: true })
 export class Billboard {
-  @Prop({ trim: true })
+  @Prop({ trim: true, uppercase: true })
   partnerId: string;
 
   @Prop({ required: true })

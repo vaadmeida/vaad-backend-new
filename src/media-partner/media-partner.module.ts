@@ -6,12 +6,14 @@ import {
   MediaPartner,
   MediaPartnerSchema,
 } from './schema/media-partner.schema';
+import { BillboardModule } from 'src/billboard/billboard.module';
 
 @Module({
   exports: [MediaPartnerService],
   controllers: [MediaPartnerController],
   providers: [MediaPartnerService],
   imports: [
+    BillboardModule,
     MongooseModule.forFeature([
       { name: MediaPartner.name, schema: MediaPartnerSchema },
     ]),

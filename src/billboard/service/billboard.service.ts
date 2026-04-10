@@ -175,4 +175,8 @@ export class BillboardService {
   async getBillboardsByIds(ids: string[]) {
     return this.BillBoardModel.find({ _id: { $in: ids } });
   }
+
+  async getPartnerIds() {
+    return this.BillBoardModel.distinct('partnerId');
+  }
 }

@@ -16,17 +16,13 @@ import {
 } from '../dto/billboard.dto';
 import { BillboardService } from '../service/billboard.service';
 import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
-import { FavoriteBillboardService } from './../service/favorite-billboard.service';
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
 
 @ApiTags('Admin Billboards')
 @Controller('billboards/admins')
 export class AdminBillboardController {
-  constructor(
-    private readonly billboardService: BillboardService,
-    private readonly favoriteBillboardService: FavoriteBillboardService,
-  ) {}
+  constructor(private readonly billboardService: BillboardService) {}
 
   @Post('')
   adminCreateBillboard(@Body() payload: CreateBillboardDTO) {

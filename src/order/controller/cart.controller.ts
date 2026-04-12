@@ -24,8 +24,15 @@ export class CartController {
   }
 
   @Post()
-  addToCart(@Body() cartItem: OrderItemDTO, @Token() { identifier }: TokenDto) {
-    return this.cartService.addToCart({ userId: identifier, ...cartItem });
+  addToCart(
+    @Body() { billboardId, ...cartItem }: OrderItemDTO,
+    @Token() { identifier }: TokenDto,
+  ) {
+    return this.cartService.addToCart({
+      userId: identifier,
+      billboard: billboardId,
+      ...cartItem,
+    });
   }
 
   @Patch('id')

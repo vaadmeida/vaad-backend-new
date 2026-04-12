@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
-  IsDate,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -22,7 +22,7 @@ export class OrderItemDTO {
   billboardId: string;
 
   @ApiProperty()
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   startDate: Date;
 }

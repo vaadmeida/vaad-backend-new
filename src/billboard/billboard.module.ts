@@ -10,6 +10,7 @@ import {
 import { FavoriteBillboardService } from './service/favorite-billboard.service';
 import { MediaPartnerBillboardController } from './controller/partner-billboard.controller';
 import { AdminBillboardController } from './controller/admin-billboard.controller';
+import { BillboardEmailTemplate } from './template/billboard.template';
 
 @Module({
   controllers: [
@@ -17,7 +18,11 @@ import { AdminBillboardController } from './controller/admin-billboard.controlle
     AdminBillboardController,
     MediaPartnerBillboardController,
   ],
-  providers: [BillboardService, FavoriteBillboardService],
+  providers: [
+    BillboardService,
+    FavoriteBillboardService,
+    BillboardEmailTemplate,
+  ],
   exports: [BillboardService],
   imports: [
     MongooseModule.forFeature([

@@ -11,10 +11,15 @@ import {
   ConsultationRequestSchema,
 } from './schema/consultation-request.schema';
 import { ConsultationRequestService } from './service/consultation-request.service';
+import { RequestEmailTemplate } from './template/request.template';
 
 @Module({
   controllers: [RequestController],
-  providers: [MediaPlanRequestService, ConsultationRequestService],
+  providers: [
+    MediaPlanRequestService,
+    ConsultationRequestService,
+    RequestEmailTemplate,
+  ],
   imports: [
     MongooseModule.forFeature([
       { name: MediaPlanRequest.name, schema: MediaPlanRequestSchema },

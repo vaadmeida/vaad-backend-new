@@ -30,10 +30,11 @@ import { OtpService } from '../../../libs/util/src/otp/services/otp.service';
 import { OtpTypeEnum } from '@app/util/otp/dto/otp.dto';
 import { UserStatusEnum } from 'src/users/dto/user.dto';
 import { RolesEnum } from '@app/util/auth/enum/roles.enum';
-import { NotificationService } from 'src/notification/service/notification.service';
 import { UserTemplateService } from '../service/user-template.service';
 import type { Response } from 'express';
 import { addCookieResponse } from '../helper/add-cookies.helper';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 const role = RolesEnum.USER;
 
@@ -48,8 +49,8 @@ export class AuthController {
     private readonly userService: UsersService,
     private readonly otpService: OtpService,
     private readonly configService: ConfigService,
-    private readonly notificationService: NotificationService,
     private readonly userTemplateService: UserTemplateService,
+    @InjectQueue('EMAIL_QUEUE') private readonly emailQueue: Queue,
   ) {
     this.FRONTEND_USER_BASEURL = configService.getOrThrow(
       'FRONTEND_USER_BASEURL',
@@ -79,10 +80,13 @@ export class AuthController {
 
       const link = `${this.FRONTEND_USER_BASEURL}/auth/verify-email?data=${encodedEmailData}`;
 
-      await this.notificationService.sendEmail({
+      await this.emailQueue.add('welcome-email', {
         email: user.email,
-        subject: 'Verify your email',
-        template: this.userTemplateService.getSignUp(link),
+        subject: 'Welcome to VAAD',
+        template: this.userTemplateService.getSignUp({
+          email: signUpData.email,
+          name: signUpData.fullName || 'Esteemed Customer',
+        }),
       });
 
       return { profile: user };

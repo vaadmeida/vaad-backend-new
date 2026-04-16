@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class UserTemplateService {
-  getSignUp({ email, name }: any) {
+export class RequestEmailTemplate {
+  quoteTemplate() {
     return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VAAD Email</title>
+    <title>Message Received</title>
 
     <style>
       body {
@@ -26,8 +26,8 @@ export class UserTemplateService {
 
       .container {
         width: 100%;
-        background-color: #f4f4f4;
         padding: 20px 0;
+        background-color: #f4f4f4;
       }
 
       .email-box {
@@ -35,42 +35,42 @@ export class UserTemplateService {
         max-width: 600px;
         background: #ffffff;
         margin: 0 auto;
-        padding: 30px;
+        padding: 28px;
         border-radius: 4px;
       }
 
       .logo {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
 
       .divider {
-        border-top: 1px solid #e5e5e5;
+        border-top: 1px solid #e5e7eb;
         margin: 20px 0;
       }
 
       h1 {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 600;
         color: #1a1a1a;
-        margin: 0 0 15px;
+        margin: 0 0 14px;
       }
 
       p {
         font-size: 14px;
-        line-height: 1.6;
         color: #555555;
-        margin: 0 0 15px;
+        line-height: 1.6;
+        margin: 0 0 14px;
       }
 
       .footer {
         font-size: 12px;
         color: #777777;
-        margin-top: 30px;
         line-height: 1.6;
+        margin-top: 40px;
       }
 
       a {
-        color: #2969ff;
+        color: #2f6fed;
         text-decoration: none;
       }
 
@@ -78,14 +78,13 @@ export class UserTemplateService {
         text-decoration: underline;
       }
 
-      /* Mobile */
       @media screen and (max-width: 600px) {
         .email-box {
           padding: 20px;
         }
 
         h1 {
-          font-size: 20px;
+          font-size: 18px;
         }
 
         p {
@@ -114,26 +113,32 @@ export class UserTemplateService {
 
             <!-- Divider -->
             <tr>
-              <td><div class="divider"></div></td>
+              <td>
+                <div class="divider"></div>
+              </td>
+            </tr>
+
+            <!-- Title -->
+            <tr>
+              <td>
+                <h1>Quote Request Received</h1>
+              </td>
             </tr>
 
             <!-- Content -->
             <tr>
               <td>
-                <h1>Welcome to VAAD Media</h1>
-
-                <p>Hi ${name},</p>
+                <p>Hi [First Name],</p>
 
                 <p>
-                  You've successfully signed in to your VAAD Media account.
-                  Explore your dashboard to view campaigns, bookings, and
-                  updates.
+                  We’ve received your quote request for [Service/Product]. Our
+                  team is reviewing your needs and will respond within 24 hours.
                 </p>
 
-                <p>Need help? We're here for you.</p>
+                <p>Thanks for choosing VAAD Media</p>
 
                 <p>
-                  Cheers,<br />
+                  Welcome aboard!<br />
                   VAAD Team
                 </p>
               </td>
@@ -144,7 +149,7 @@ export class UserTemplateService {
               <td class="footer">
                 <p>
                   This email was sent to
-                  <a href="mailto:${email}">${email}</a>. If
+                  <a href="mailto:emmanuel@vaad.com">emmanuel@vaad.com</a>. If
                   you'd rather not receive this kind of email, Don’t want any
                   more emails from Notable? <a href="#">Unsubscribe</a>.
                 </p>
@@ -154,7 +159,7 @@ export class UserTemplateService {
                   Off Lateef Jakande Road, Agidingbi, Ikeja, Lagos.
                 </p>
 
-                <p>©️${new Date().getFullYear()}  Vaad Media</p>
+                <p>©️ 2025 Vaad Media</p>
               </td>
             </tr>
           </table>

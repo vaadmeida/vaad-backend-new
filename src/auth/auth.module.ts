@@ -8,11 +8,16 @@ import { AdminAuthController } from './controller/auth-admin.controller';
 import { AdminModule } from 'src/admin/admin.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { UserTemplateService } from './service/user-template.service';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   providers: [UserTemplateService],
   controllers: [AuthController, MediaAuthController, AdminAuthController],
   imports: [
+    BullModule.registerQueue({
+      // configKey: 'alternative-config',
+      name: 'EMAIL_QUEUE',
+    }),
     UsersModule,
     OtpModule,
     MediaPartnerModule,

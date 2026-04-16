@@ -1,10 +1,13 @@
 import { ConfigModule } from '@nestjs/config';
 import {
+  Logger,
   MiddlewareConsumer,
   Module,
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import Redis from 'ioredis';
 import { AppController } from './app.controller';
 import { AdminModule } from './admin/admin.module';
 import { BillboardModule } from './billboard/billboard.module';
@@ -31,6 +34,12 @@ const envFilePath =
 
 @Module({
   imports: [
+    BullModule.forRoot({
+      connection: {
+        url: process.env['REDIS_URL'] as string,
+        maxRetriesPerRequest: null,
+      },
+    }),
     ConfigModule.forRoot({ isGlobal: true, envFilePath }),
     UtilModule,
     AdminModule,

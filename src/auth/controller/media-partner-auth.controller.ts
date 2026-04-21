@@ -1,3 +1,4 @@
+import { FileService } from './../../file/service/file.service';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -8,6 +9,8 @@ import {
   Post,
   Res,
   UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ForgetPasswordDto,
@@ -35,6 +38,7 @@ import { NotificationService } from 'src/notification/service/notification.servi
 import { UserTemplateService } from '../service/user-template.service';
 import { addCookieResponse } from '../helper/add-cookies.helper';
 import type { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 const role = RolesEnum.MEDIA_PARTNER;
 
@@ -51,6 +55,7 @@ export class MediaAuthController {
     private readonly configService: ConfigService,
     private readonly notificationService: NotificationService,
     private readonly userTemplateService: UserTemplateService,
+    private readonly fileService: FileService,
   ) {
     this.FRONTEND_MEDIA_PARTNER_BASEURL = configService.getOrThrow(
       'FRONTEND_MEDIA_PARTNER_BASEURL',
@@ -58,7 +63,15 @@ export class MediaAuthController {
   }
 
   @Post('sign-up')
-  async userSignUp(@Body() { password, ...signUpData }: MediaPartnerSingUpDto) {
+  @UseInterceptors(FileInterceptor('logo'))
+  async userSignUp(
+    @Body() { password, ...signUpData }: MediaPartnerSingUpDto,
+    @UploadedFile() file: any,
+  ) {
+    if (file) {
+      const upload = await this.fileService.uploadFile(file);
+      signUpData.logo = upload.url;
+    }
     const session =
       await this.mediaPartnerService.MediaPartnerModel.startSession();
     return session.withTransaction(async () => {

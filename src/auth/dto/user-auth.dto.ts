@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
@@ -128,7 +129,7 @@ export class MediaPartnerSingUpDto {
 
   @ApiProperty({ example: 'https://example.com/logo.png' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   logo: string;
 
   @ApiProperty({
@@ -136,8 +137,8 @@ export class MediaPartnerSingUpDto {
     description: 'Whether the user accepts terms and conditions',
   })
   @IsNotEmpty()
-  @IsBoolean()
-  termsAndCondition: boolean;
+  @IsString()
+  termsAndCondition: string;
 }
 
 export class RefreshTokenDto {

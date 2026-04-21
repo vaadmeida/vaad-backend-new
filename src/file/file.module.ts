@@ -8,6 +8,7 @@ import { fileModel } from './model/file.model';
 @Module({
   providers: [S3Service, FileService],
   controllers: [FileController],
+  exports: [FileService],
   imports: [MongooseModule.forFeatureAsync([fileModel])],
 })
 export class FileModule {}

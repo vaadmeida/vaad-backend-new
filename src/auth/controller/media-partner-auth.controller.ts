@@ -99,8 +99,11 @@ export class MediaAuthController {
 
       await this.notificationService.sendEmail({
         email: user.email,
-        subject: 'Verify your email',
-        template: this.userTemplateService.getSignUp(link),
+        subject: 'Welcome to VAAD!',
+        template: this.userTemplateService.getSignUp({
+          email: signUpData.email.toLowerCase(),
+          name: signUpData.fullName.toUpperCase(),
+        }),
       });
 
       return { profile: user };

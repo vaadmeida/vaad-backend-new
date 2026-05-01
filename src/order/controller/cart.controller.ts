@@ -35,7 +35,7 @@ export class CartController {
     });
   }
 
-  @Patch('id')
+  @Patch('/:id')
   updateCart(
     @Param('id') id: string,
     @Body() cartItem: OrderItemDTO,
@@ -44,7 +44,7 @@ export class CartController {
     return this.cartService.updateCart(id, { userId: identifier, ...cartItem });
   }
 
-  @Delete('id')
+  @Delete('/:id')
   async deleteCart(@Param('id') id: string, @Token() { identifier }: TokenDto) {
     await this.cartService.deleteCartItem(id, identifier);
 

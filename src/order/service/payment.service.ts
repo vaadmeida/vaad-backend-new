@@ -26,7 +26,7 @@ export class PaymentService {
       const billboard = billboards.find(
         (b) => b._id.toString() === (item.billboard as string),
       );
-      amount += (billboard?.rate || 0) * item.durationInMonths;
+      amount += (billboard?.price || 0) * item.durationInMonths;
     }
 
     payment.amount = amount;

@@ -89,7 +89,7 @@ export class AuthController {
         }),
       });
 
-      return { profile: user };
+      return { profile: user, token, link };
     });
   }
 

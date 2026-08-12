@@ -9,15 +9,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  CreateBillboardDTO,
-  PaginationFilter,
-  SearchBillboardFilter,
-} from '../dto/billboard.dto';
+import { PaginationFilter, SearchBillboardFilter } from '../dto/billboard.dto';
 import { BillboardService } from '../service/billboard.service';
 import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
+import { Billboard } from '../schema/billboard.schema';
 
 @ApiTags('Admin Billboards')
 @Controller('billboards/admins')
@@ -25,7 +22,7 @@ export class AdminBillboardController {
   constructor(private readonly billboardService: BillboardService) {}
 
   @Post('')
-  adminCreateBillboard(@Body() payload: CreateBillboardDTO) {
+  adminCreateBillboard(@Body() payload: Billboard) {
     return this.billboardService.createBillboard(payload);
   }
 
@@ -43,7 +40,7 @@ export class AdminBillboardController {
   }
 
   @Post('/partners')
-  partnerCreateBillboard(@Body() payload: CreateBillboardDTO) {
+  partnerCreateBillboard(@Body() payload: Billboard) {
     return this.billboardService.createBillboard(payload);
   }
 

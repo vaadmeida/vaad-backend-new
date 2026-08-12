@@ -1,6 +1,8 @@
 import {
-  BillboardServiceCategory,
-  BillboardTargetAudience,
+  BillBoardApprovalEnum,
+  BillBoardFormatEnum,
+  BillBoardIlluminationEnum,
+  BillBoardVisibilityEnum,
 } from './../enum/billboard.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
@@ -14,6 +16,30 @@ import { transform } from '@app/util/general/function/pascal-case.function';
 export class Billboard {
   @Prop({ trim: true, uppercase: true })
   partnerId: string;
+
+  @Prop({ default: () => new Date() })
+  availableDate: Date;
+
+  @Prop({ type: String, required: true })
+  printProductType: BillboardPrintProductType;
+
+  @Prop({ type: String, required: true })
+  mediaType: BillboardMediaTypeEnum;
+
+  @Prop({ default: 'meters' })
+  dimension: string;
+
+  @Prop({ type: String, required: true })
+  orientation: BillBoardOrientationEnum;
+
+  @Prop({ type: String, required: true })
+  visibility: BillBoardVisibilityEnum;
+
+  @Prop({ type: String, required: true })
+  illumination: BillBoardIlluminationEnum;
+
+  @Prop({ type: String, required: true })
+  format: BillBoardFormatEnum;
 
   @Prop({ required: true })
   description: string;
@@ -30,32 +56,20 @@ export class Billboard {
   @Prop({ transform })
   landmark: string;
 
+  @Prop({ type: String, default: BillBoardApprovalEnum.DECLINED })
+  approvalStatus: BillBoardApprovalEnum;
+
   @Prop({ required: true })
   height: number;
 
-  @Prop({ required: true })
+  @Prop()
   width: number;
 
-  @Prop({ default: 'meters' })
-  units: string;
+  @Prop()
+  size: string;
 
   @Prop({ required: true })
-  rate: number;
-
-  @Prop({ type: String, enum: BillboardPrintProductType, required: true })
-  printProductType: BillboardPrintProductType;
-
-  @Prop({ type: String, enum: BillboardServiceCategory, required: true })
-  serviceType: BillboardServiceCategory;
-
-  @Prop({ type: String, enum: BillboardMediaTypeEnum, required: true })
-  mediaType: BillboardMediaTypeEnum;
-
-  @Prop({ type: String, enum: BillBoardOrientationEnum, required: true })
-  orientation: BillBoardOrientationEnum;
-
-  @Prop({ type: [String], enum: BillboardTargetAudience, required: true })
-  targetAudience: BillboardTargetAudience[];
+  price: number;
 
   @Prop({ type: [String] })
   photos: string[];
@@ -71,9 +85,6 @@ export class Billboard {
 
   @Prop({ type: [String], default: [] })
   features: string[];
-
-  @Prop({ default: () => new Date() })
-  availableDate: Date;
 }
 
 export const BillboardSchema = SchemaFactory.createForClass(Billboard);

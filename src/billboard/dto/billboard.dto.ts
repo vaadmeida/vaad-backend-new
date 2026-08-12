@@ -69,17 +69,12 @@ export class CreateBillboardDTO {
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
-  rate: number;
+  price: number;
 
   @ApiProperty({ enum: BillboardPrintProductType })
   @IsEnum(BillboardPrintProductType)
   @IsNotEmpty()
   printProductType: BillboardPrintProductType;
-
-  @ApiProperty({ enum: BillboardServiceCategory })
-  @IsEnum(BillboardServiceCategory)
-  @IsNotEmpty()
-  serviceType: BillboardServiceCategory;
 
   @ApiProperty({ enum: BillboardMediaTypeEnum })
   @IsEnum(BillboardMediaTypeEnum)

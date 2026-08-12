@@ -1,10 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { paginateResult } from '@app/util';
 import { PaginationDto } from '@app/util/pagination/dto/paginate.dto';
-import {
-  CreateBillboardDTO,
-  SearchBillboardFilter,
-} from '../dto/billboard.dto';
+import { SearchBillboardFilter } from '../dto/billboard.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Billboard } from '../schema/billboard.schema';
 import { Model } from 'mongoose';
@@ -14,10 +11,13 @@ import {
   BillboardLandmark,
   BillboardTargetAudience,
   BillboardServiceCategory,
+  BillBoardApprovalEnum,
+  BillBoardFormatEnum,
+  BillBoardVisibilityEnum,
+  BillBoardIlluminationEnum,
 } from '../enum/billboard.enum';
 import { NigeriaStateCityMap } from '../dto/state-city.dto';
 import { FavoriteBillboardService } from './favorite-billboard.service';
-import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 import { mediaAndProductsTypes } from '../dto/media-type.dto';
 
 @Injectable()
@@ -37,14 +37,18 @@ export class BillboardService {
       landmarks: Object.values(BillboardLandmark),
       statesAndCites: NigeriaStateCityMap,
       targetAudience: Object.values(BillboardTargetAudience),
+      format: Object.values(BillBoardFormatEnum),
+      approvalStatus: Object.values(BillBoardApprovalEnum),
+      visibility: Object.values(BillBoardVisibilityEnum),
+      illumination: Object.values(BillBoardIlluminationEnum),
     };
   }
 
-  async createBillboard(payload: CreateBillboardDTO) {
+  async createBillboard(payload: Billboard) {
     return this.BillBoardModel.create(payload);
   }
 
-  async updateBillboard(id: string, payload: UpdateBillboardDTO) {
+  async updateBillboard(id: string, payload: Partial<Billboard>) {
     return this.BillBoardModel.findByIdAndUpdate(id, payload, {
       returnDocument: 'after',
     });

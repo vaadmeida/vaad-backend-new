@@ -1,6 +1,31 @@
 export enum BillBoardOrientationEnum {
-  landscape = 'landscape',
-  portrait = 'portrait',
+  LANDSCAPE = 'Landscape',
+  PORTRAIT = 'Portrait',
+}
+
+export enum BillBoardVisibilityEnum {
+  HIGH_TRAFFIC = 'High Traffic Junction',
+  ALL_DAY = '24-Hour Visibility',
+  DAY_TIME = 'Daytime Only',
+  NIGHT_TIME = 'Night Time Only',
+}
+
+export enum BillBoardIlluminationEnum {
+  YES = 'Yes',
+  NO = 'No',
+}
+
+export enum BillBoardApprovalEnum {
+  PENDING = 'Pending',
+  Approved = 'Approved',
+  DECLINED = 'Declined',
+}
+
+export enum BillBoardFormatEnum {
+  BILLBOARD_LAMPOST = 'Billboard and Lamppost Advertising',
+  DIGITAL_ADVERTISING = 'Digital Advertising',
+  TRANSIT_ADVERTISING = 'Transit Advertising',
+  RADIO_TV_ADVERTISING = 'Radio & TV Advertising',
 }
 
 export enum BillboardPrintProductType {

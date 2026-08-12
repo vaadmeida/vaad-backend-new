@@ -9,16 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import {
-  CreateBillboardDTO,
-  PaginationFilter,
-  SearchBillboardFilter,
-} from '../dto/billboard.dto';
+import { PaginationFilter, SearchBillboardFilter } from '../dto/billboard.dto';
 import { BillboardService } from '../service/billboard.service';
 import { UpdateBillboardDTO } from '../dto/update-billboard.dto';
 import { FavoriteBillboardService } from './../service/favorite-billboard.service';
 import { Token } from '@app/util';
 import type { TokenDto } from '@app/util/auth/dto/token.dto';
+import { Billboard } from '../schema/billboard.schema';
 
 @ApiTags('Media Partner Billboards')
 @Controller('billboards/media-partners')
@@ -29,7 +26,7 @@ export class MediaPartnerBillboardController {
   ) {}
 
   @Post('/admins')
-  adminCreateBillboard(@Body() payload: CreateBillboardDTO) {
+  adminCreateBillboard(@Body() payload: Billboard) {
     return this.billboardService.createBillboard(payload);
   }
 
@@ -41,13 +38,13 @@ export class MediaPartnerBillboardController {
     return this.billboardService.updateBillboard(id, payload);
   }
 
-  @Delete('/admins')
-  deleteBillboard(@Body() payload: CreateBillboardDTO) {
-    return this.billboardService.createBillboard(payload);
+  @Delete('/:id')
+  deleteBillboard(@Param('id') id: string) {
+    return this.billboardService.deleteBillboard(id);
   }
 
   @Post('/partners')
-  partnerCreateBillboard(@Body() payload: CreateBillboardDTO) {
+  partnerCreateBillboard(@Body() payload: Billboard) {
     return this.billboardService.createBillboard(payload);
   }
 

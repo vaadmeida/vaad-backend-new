@@ -14,16 +14,17 @@ async function bootstrap() {
   app.use(helmet());
   app.enableShutdownHooks();
   app.enableCors({
-    origin: [
-      'http://localhost:3000', // Local development
-      'http://localhost:3001', // Alternative dev port
-      'http://localhost:3002',
-      'https://vaad-web-new-admin.vercel.app',
-      'https://vaad-web-new-media-partner.vercel.app',
-      'https://vaad-web-new-user.vercel.app', // Production
-      'https://www.vaad.com', // Production with www
-      'https://admin.vaad.com', // Admin subdomain,
-    ],
+    origin: '*',
+    // [
+    //   'http://localhost:3000', // Local development
+    //   'http://localhost:3001', // Alternative dev port
+    //   'http://localhost:3002',
+    //   'https://vaad-web-new-admin.vercel.app',
+    //   'https://vaad-web-new-media-partner.vercel.app',
+    //   'https://vaad-web-new-user.vercel.app', // Production
+    //   'https://www.vaad.com', // Production with www
+    //   'https://admin.vaad.com', // Admin subdomain,
+    // ],
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

@@ -14,7 +14,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableShutdownHooks();
   app.enableCors({
-    origin: '*',
+    origin: true,
     // [
     //   'http://localhost:3000', // Local development
     //   'http://localhost:3001', // Alternative dev port

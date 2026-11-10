@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class UtilService {}
+export class UtilService {
+  private readonly logger = new Logger(UtilService.name);
+}

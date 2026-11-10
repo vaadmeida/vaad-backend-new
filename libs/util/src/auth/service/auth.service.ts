@@ -47,13 +47,23 @@ export class AuthService {
     const account = await this.AuthModel.findOne({ identifier });
 
     if (!account) {
-      throw new UnauthorizedException('Invalid credential');
+      const error = new UnauthorizedException('Invalid credential');
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     const isValid = await verifyHash(account.password, password);
 
     if (!isValid) {
-      throw new UnauthorizedException('Invalid credential');
+      const error = new UnauthorizedException('Invalid credential');
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     const cacheData: TokenDto = {
@@ -73,7 +83,12 @@ export class AuthService {
     const { id } = await this.tokenService.verifyRefreshToken(token);
     const account = await this.AuthModel.findById(id);
     if (!account) {
-      throw new UnauthorizedException('Invalid credential');
+      const error = new UnauthorizedException('Invalid credential');
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -101,7 +116,14 @@ export class AuthService {
   async generateTokens(identifier: string, data: TokenData) {
     const account = await this.AuthModel.findOne({ identifier });
     if (!account) {
-      throw new NotFoundException('Account not found for token generation');
+      const error = new NotFoundException(
+        'Account not found for token generation',
+      );
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     const cacheData: TokenDto = {

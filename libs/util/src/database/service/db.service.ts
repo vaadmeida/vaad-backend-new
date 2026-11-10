@@ -129,6 +129,10 @@ export abstract class BaseService<C> {
       });
       return result;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new BadRequestException(e.message);
     }
   }
@@ -162,7 +166,14 @@ export abstract class BaseService<C> {
       })
       .populate(population);
     if (!result) {
-      throw new NotFoundException(`${this.model.modelName} document not found`);
+      const error = new NotFoundException(
+        `${this.model.modelName} document not found`,
+      );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     return result;
@@ -178,7 +189,14 @@ export abstract class BaseService<C> {
       })
       .populate(population);
     if (!result) {
-      throw new NotFoundException(`${this.model.modelName} document not found`);
+      const error = new NotFoundException(
+        `${this.model.modelName} document not found`,
+      );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
     return result;
   }
@@ -195,6 +213,10 @@ export abstract class BaseService<C> {
       });
       return result;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new BadRequestException(e.message);
     }
   }
@@ -209,6 +231,10 @@ export abstract class BaseService<C> {
       });
       return result;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new BadRequestException(e.message);
     }
   }
@@ -224,6 +250,10 @@ export abstract class BaseService<C> {
       });
       return result;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new BadRequestException(e.message);
     }
   }
@@ -234,16 +264,27 @@ export abstract class BaseService<C> {
   async deleteByIdOrErrorOut(id: string) {
     const deletedRecord = await this.model.findByIdAndDelete(id);
     if (deletedRecord) return deletedRecord;
-    throw new NotFoundException(
+    const error = new NotFoundException(
       `${this.model.modelName} record with id ${id} not found`,
     );
+    this._logger.error(
+      error instanceof Error ? error.message : String(error),
+      error instanceof Error ? error.stack : undefined,
+    );
+    throw error;
   }
   async deleteManyWithSession(filter: QueryFilter<C>, session: ClientSession) {
     const deletedDataInfo = await this.model.deleteMany(filter, { session });
-    if (!deletedDataInfo)
-      throw new NotFoundException(
+    if (!deletedDataInfo) {
+      const error = new NotFoundException(
         `error deleting ${this.model.modelName} document records`,
       );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
     return deletedDataInfo;
   }
 
@@ -253,10 +294,16 @@ export abstract class BaseService<C> {
 
   async deleteMany(filter: QueryFilter<C>) {
     const deletedDataInfo = await this.model.deleteMany(filter);
-    if (!deletedDataInfo)
-      throw new NotFoundException(
+    if (!deletedDataInfo) {
+      const error = new NotFoundException(
         `error deleting ${this.model.modelName} document records`,
       );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
     return deletedDataInfo;
   }
   async findById(id: string, population: Array<PopulateOptions>) {
@@ -265,8 +312,16 @@ export abstract class BaseService<C> {
 
   async findByIdOrErrorOut(id: string, population: Array<PopulateOptions>) {
     const found = await this.model.findById(id).populate(population);
-    if (!found)
-      throw new NotFoundException(`${this.model.modelName} document not found`);
+    if (!found) {
+      const error = new NotFoundException(
+        `${this.model.modelName} document not found`,
+      );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
     return found;
   }
 
@@ -283,7 +338,7 @@ export abstract class BaseService<C> {
         .populate(population);
       return foundRecord;
     } catch (e) {
-      Logger.error(e);
+      this._logger.error(e);
       throw new InternalServerErrorException(e.message);
     }
   }
@@ -315,6 +370,10 @@ export abstract class BaseService<C> {
         .populate(population);
       return foundRecord;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new InternalServerErrorException(e.message);
     }
   }
@@ -328,12 +387,22 @@ export abstract class BaseService<C> {
       const response = await this.model
         .updateMany(filter, data, {})
         .populate(population);
-      if (!response)
-        throw new BadRequestException(
+      if (!response) {
+        const error = new BadRequestException(
           `error updating ${this.model.modelName} document`,
         );
+        this._logger.error(
+          error instanceof Error ? error.message : String(error),
+          error instanceof Error ? error.stack : undefined,
+        );
+        throw error;
+      }
       return response;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new InternalServerErrorException(e.message);
     }
   }
@@ -348,12 +417,22 @@ export abstract class BaseService<C> {
           new: true,
         })
         .populate(population);
-      if (!foundRecord)
-        throw new NotFoundException(
+      if (!foundRecord) {
+        const error = new NotFoundException(
           `${this.model.modelName} document record not found`,
         );
+        this._logger.error(
+          error instanceof Error ? error.message : String(error),
+          error instanceof Error ? error.stack : undefined,
+        );
+        throw error;
+      }
       return foundRecord;
     } catch (e) {
+      this._logger.error(
+        e instanceof Error ? e.message : String(e),
+        e instanceof Error ? e.stack : undefined,
+      );
       throw new InternalServerErrorException(e.message);
     }
   }
@@ -371,8 +450,16 @@ export abstract class BaseService<C> {
 
   async findOrErrorOut(data: QueryFilter<C>, populate: Array<PopulateOptions>) {
     const results = await this.model.find(data).populate(populate);
-    if (!results.length)
-      throw new NotFoundException(`${this.model.modelName} records not found`);
+    if (!results.length) {
+      const error = new NotFoundException(
+        `${this.model.modelName} records not found`,
+      );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
 
     return results;
   }
@@ -382,8 +469,16 @@ export abstract class BaseService<C> {
   ) {
     const foundRecord = await this.findOne(data, populate);
 
-    if (!foundRecord)
-      throw new NotFoundException(`${this.model.modelName} record not found`);
+    if (!foundRecord) {
+      const error = new NotFoundException(
+        `${this.model.modelName} record not found`,
+      );
+      this._logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
 
     return foundRecord;
   }

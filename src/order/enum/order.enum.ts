@@ -3,10 +3,3 @@ export enum OrderStatusEnum {
   CONFIRMED = 'CONFIRMED',
   CANCELLED = 'CANCELLED',
 }
-
-export enum PaymentStatusEnum {
-  INITIATED = 'INITIATED',
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-}

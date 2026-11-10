@@ -65,7 +65,12 @@ export class CacheService {
     const value = await this.redisGet<T>(key);
 
     if (!value) {
-      throw new NotFoundException('Redis key not found');
+      const error = new NotFoundException('Redis key not found');
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     return value;
@@ -74,7 +79,14 @@ export class CacheService {
   async getOrThrowError<T>(key: string) {
     const data = await this.get<T>(key);
     if (!data) {
-      throw new NotFoundException(`redis failed to get value for key: ${key}`);
+      const error = new NotFoundException(
+        `redis failed to get value for key: ${key}`,
+      );
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
     return Promise.resolve<T>(data);
   }

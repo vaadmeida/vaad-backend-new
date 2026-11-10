@@ -96,6 +96,7 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/src/$1",
       "^@app/util(|/.*)$": "<rootDir>/libs/util/src/$1"
     }
   }

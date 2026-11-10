@@ -1,4 +1,5 @@
 import {
+  Logger,
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -9,6 +10,8 @@ import { Cart } from '../schema/cart.schema';
 
 @Injectable()
 export class CartService {
+  private readonly logger = new Logger(CartService.name);
+
   constructor(
     @InjectModel(Cart.name) private readonly CartModel: Model<Cart>,
   ) {}
@@ -20,7 +23,12 @@ export class CartService {
         billboard: payload.billboard,
       })
     ) {
-      throw new BadRequestException('Billboard already added to cart');
+      const error = new BadRequestException('Billboard already added to cart');
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     return this.CartModel.create(payload);

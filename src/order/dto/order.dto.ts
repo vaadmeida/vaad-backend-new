@@ -1,6 +1,13 @@
+import { Type } from 'class-transformer';
+import { PaymentType } from '../enum/payment.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  ArrayNotEmpty,
+  ValidateNested,
+  IsMongoId,
+  IsEnum,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -19,6 +26,7 @@ export class OrderItemDTO {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @IsMongoId()
   billboardId: string;
 
   @ApiProperty()
@@ -31,7 +39,44 @@ export class CreateOrderPaymentDTO {
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemDTO)
   orderItems: OrderItemDTO[];
+
+  @ApiProperty()
+  @IsString()
+  brandName: string;
+
+  @ApiProperty()
+  @IsString()
+  industry: string;
+
+  @ApiProperty()
+  @IsString()
+  campaignObjective: string;
+
+  @ApiProperty()
+  @IsString()
+  additionalInfo: string;
+
+  @ApiProperty()
+  @IsArray()
+  documents: string[];
+
+  @ApiProperty()
+  @IsString()
+  couponCode: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsEnum(PaymentType)
+  paymentType: PaymentType;
+
+  @ApiProperty()
+  @IsBoolean()
+  acceptTermsAndConditions: boolean;
 }
 
 export class PaginationFilter {

@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserTemplateService {
+  private readonly logger = new Logger(UserTemplateService.name);
+
   getSignUp({ email, name }: any) {
     return `<!doctype html>
 <html lang="en">

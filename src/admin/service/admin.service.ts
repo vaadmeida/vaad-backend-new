@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Logger, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Admin } from '../schema/admin.schema';
 import { ClientSession, Model, QueryFilter } from 'mongoose';
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(@InjectModel(Admin.name) readonly AdminModel: Model<Admin>) {}
 
   async createUser(admin: Partial<Admin>, session?: ClientSession) {

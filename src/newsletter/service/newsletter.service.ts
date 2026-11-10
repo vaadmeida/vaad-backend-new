@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Newsletter } from '../schema/newsletter.schema';
 
 @Injectable()
 export class NewsletterService {
+  private readonly logger = new Logger(NewsletterService.name);
+
   constructor(
     @InjectModel(Newsletter.name) readonly NewsletterModel: Model<Newsletter>,
   ) {}

@@ -54,7 +54,12 @@ export class OtpService {
       .sort({ createdAt: -1 });
 
     if (!foundCode) {
-      throw new NotFoundException(`no OTP is associated with ${email}`);
+      const error = new NotFoundException(`no OTP is associated with ${email}`);
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
 
     if (canExpire) {
@@ -63,15 +68,27 @@ export class OtpService {
 
       if (currentTime > expiryTime) {
         await this.otpModel.deleteMany({ email });
-        throw new BadRequestException(
+        const error = new BadRequestException(
           'OTP has expired, please generate a new one',
         );
+        this.logger.error(
+          error instanceof Error ? error.message : String(error),
+          error instanceof Error ? error.stack : undefined,
+        );
+        throw error;
       }
     }
     const isValid = await verifyHash(foundCode.code, code);
     if (!isValid) {
       await this.otpModel.deleteMany({ email });
-      throw new BadRequestException('invalid OTP, please generate a new one');
+      const error = new BadRequestException(
+        'invalid OTP, please generate a new one',
+      );
+      this.logger.error(
+        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
     }
     await this.otpModel.deleteMany({ email });
     return isValid;

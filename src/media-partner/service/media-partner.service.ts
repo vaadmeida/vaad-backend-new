@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Logger, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MediaPartner } from '../schema/media-partner.schema';
 import { ClientSession, Model, QueryFilter } from 'mongoose';
 
 @Injectable()
 export class MediaPartnerService {
+  private readonly logger = new Logger(MediaPartnerService.name);
+
   constructor(
     @InjectModel(MediaPartner.name)
     readonly MediaPartnerModel: Model<MediaPartner>,

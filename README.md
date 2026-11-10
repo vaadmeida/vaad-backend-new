@@ -96,3 +96,31 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Paystack checkout
+
+Set `PAYSTACK_SECRET_KEY` in the server environment. Optionally set
+`PAYSTACK_CALLBACK_URL` to the frontend URL customers should return to after checkout.
+Use a Paystack test key for development; never expose the secret key to the client.
+
+`POST /orders/initiate-payments` accepts `CreateOrderPaymentDTO` and uses the
+signed-in user's email. Billboard prices and order totals are in NGN; the server
+converts the total to kobo when initializing Paystack. The saved order response
+includes a unique `reference`, with payment status `PENDING`. All orders
+include `paymentLink`, which the frontend can redirect the customer to.
+
+The order is saved before contacting Paystack so its reference remains available
+if initialization fails. Such orders remain `INITIATED`; any bank account details already obtained are saved.
+Checkout initialization does not confirm payment: a verified webhook or
+server-side transaction verification must be added before marking orders
+`COMPLETED` or fulfilling bookings. `PAY_LATER` orders use Paystack's bank transfer Charge API and return
+`bankAccount` with `reference`, `bankName`, `accountName`, `accountNumber`, and
+`expiresAt` alongside a checkout link. The transfer uses a separate reference
+(`<order reference>-transfer`) because each Paystack transaction needs a unique
+reference. Payment reconciliation must recognize either reference for the order
+and handle duplicate payments without fulfilling the order twice. Account numbers are strings to preserve leading zeros.
+These transaction-specific accounts expire after at most eight hours (Paystack's
+maximum); show the returned expiry to customers. Creating a replacement account
+for an expired order is not currently supported. Instant (`CONFIRMED`) orders
+continue to return `paymentLink`. Bank account creation failures leave the order
+`INITIATED`; successful initialization of both options sets it to `PENDING`.

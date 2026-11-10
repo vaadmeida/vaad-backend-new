@@ -75,6 +75,10 @@ export class TokenService {
       const decoded = await jwt.decode(token, tokenSecret);
       return decoded;
     } catch (err) {
+      this.logger.error(
+        err instanceof Error ? err.message : String(err),
+        err instanceof Error ? err.stack : undefined,
+      );
       throw new UnauthorizedException(err);
     }
   }

@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
 import { ContactUs } from '../schema/contact-us.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class ContactUsService {
+  private readonly logger = new Logger(ContactUsService.name);
+
   constructor(
     @InjectModel(ContactUs.name)
     private readonly ContactUsModel: Model<ContactUs>,

@@ -13,7 +13,7 @@ import { CreateOrderPaymentDTO } from '../dto/order.dto';
 import { BillboardService } from 'src/billboard/service/billboard.service';
 import { Booking } from '../schema/booking.schema';
 import { DateTime } from 'luxon';
-import { OrderStatusEnum } from '../enum/order.enum';
+import { BookingPeriodEnum, OrderStatusEnum } from '../enum/order.enum';
 
 @Injectable()
 export class OrderService {
@@ -25,6 +25,43 @@ export class OrderService {
     private readonly paymentService: PaymentService,
     @InjectModel(Booking.name) private readonly BookingModel: Model<Booking>,
   ) {}
+
+  async getBookings(status?: OrderStatusEnum) {
+    return this.BookingModel.find(status === undefined ? {} : { status })
+      .sort({ createdAt: -1, _id: -1 })
+      .populate('user')
+      .populate('order')
+      .exec();
+  }
+
+  async getBookingTotals(period: BookingPeriodEnum = BookingPeriodEnum.WEEK) {
+    const timezone = 'Africa/Lagos';
+    const groups = await this.BookingModel.aggregate<{
+      start: Date;
+      total: number;
+    }>([
+      { $match: { createdAt: { $type: 'date' } } },
+      {
+        $group: {
+          _id: {
+            $dateTrunc: {
+              date: '$createdAt',
+              unit: period,
+              timezone,
+              ...(period === BookingPeriodEnum.WEEK
+                ? { startOfWeek: 'monday' }
+                : {}),
+            },
+          },
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+      { $project: { _id: 0, start: '$_id', total: 1 } },
+    ]).exec();
+
+    return { period, timezone, groups };
+  }
 
   async getWeeklyBookingComparison(status?: OrderStatusEnum) {
     const statusFilter = status === undefined ? {} : { status };
